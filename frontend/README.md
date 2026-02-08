@@ -1,6 +1,14 @@
 # ClassmateHub 前端项目
 
-ClassmateHub 是一个现代化的同学录管理系统，旨在帮助用户连接和管理同学关系，提供便捷的社交网络功能。
+ClassmateHub 是一个现代化的同学录管理系统，旨在帮助用户连接和管理同学关系，提供便捷的社交网络功能。系统采用前后端分离架构，前端基于 Vue 3 + TypeScript 开发，后端基于 Java 开发。
+
+## 项目目标
+
+- 提供一个易用、美观的同学录管理界面
+- 支持用户注册、登录和个人信息管理
+- 支持班级管理和学生信息管理
+- 提供统一、规范的 API 接口
+- 确保系统的安全性和可靠性
 
 ## 技术栈
 
@@ -11,16 +19,21 @@ ClassmateHub 是一个现代化的同学录管理系统，旨在帮助用户连�
 - **构建工具**: [Vite](https://vitejs.dev/) - 下一代前端构建工具
 - **类型检查**: [TypeScript](https://www.typescriptlang.org/) - JavaScript 的超集，提供类型安全
 - **HTTP 客户端**: [Axios](https://axios-http.com/) - 基于 Promise 的 HTTP 客户端
+- **认证方案**: JWT (JSON Web Token) - 无状态认证机制
 
 ## 功能特性
 
-- ✅ 用户注册与登录
+- ✅ 用户注册与登录（JWT 认证）
 - ✅ 个人信息管理
-- ✅ 同学列表展示
-- ✅ 课程管理
+- ✅ 同学列表展示（支持分页）
+- ✅ 班级管理（创建、编辑、删除班级）
+- ✅ 学生信息管理（添加、编辑、删除学生信息）
 - ✅ 响应式设计，支持多种设备
 - ✅ 国际化支持（中文）
 - ✅ 现代化的用户界面
+- ✅ 统一的 API 响应结构
+- ✅ TypeScript 类型安全
+- ✅ 预加载动画提升用户体验
 
 ## 项目结构
 
@@ -34,12 +47,14 @@ frontend/
 │   ├── views/              # 页面视图组件
 │   ├── router/             # 路由配置
 │   ├── stores/             # Pinia 状态管理
-│   ├── api/                # API 接口定义
-│   ├── utils/              # 工具函数
-│   ├── types/              # TypeScript 类型定义
+│   ├── api/                # API 接口定义（包含完整的类型定义）
+│   ├── plugins/            # 插件配置（如 Element Plus）
 │   ├── App.vue             # 根组件
 │   └── main.ts             # 应用入口文件
-├── index.html              # 主 HTML 文件
+├── docs/                   # 项目文档
+│   ├── 同学录系统 API 文档（v0.1）.md
+│   └── 用于管理和保存同学信息的全栈 Web 同学录.md
+├── index.html              # 主 HTML 文件（含预加载动画）
 ├── package.json            # 项目依赖和脚本
 ├── tsconfig.json           # TypeScript 配置
 └── vite.config.ts          # Vite 配置文件
@@ -93,7 +108,7 @@ npm run preview
 
 项目通过 Vite 的环境变量系统进行配置，相关配置在 `vite.config.ts` 中：
 
-- **代理配置**: 开发环境中，`/api` 路径下的请求会被代理到 `http://localhost:8080`，用于后端接口调试。
+- **代理配置**: 开发环境中，`/api` 路径下的请求会被代理到 `http://localhost:8080`，用于后端接口调试。前端实际使用的 API 基础路径是 `/api/v1`。
 
 ### TypeScript 配置
 
@@ -105,9 +120,39 @@ npm run preview
 
 所有 API 请求都通过 `src/api/` 目录下的模块进行管理：
 
-- **认证接口**: `/api/auth` - 用户注册、登录等
-- **用户接口**: `/api/users` - 用户信息管理
-- **班级接口**: `/api/classes` - 班级和学生管理
+- **API 基础路径**: `/api/v1`
+- **认证接口**: `/api/v1/auth` - 用户注册、登录等
+- **班级接口**: `/api/v1/classes` - 班级管理
+- **学生接口**: `/api/v1/students` - 学生信息管理
+
+### API 响应结构
+
+所有 API 响应都遵循统一的格式：
+
+```json
+{
+  "code": 0, // 0 表示成功，非 0 表示失败
+  "message": "success", // 响应消息
+  "data": {} // 响应数据
+}
+```
+
+### 分页响应
+
+分页数据的响应结构：
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "items": [], // 数据列表
+    "page": 1, // 当前页码
+    "pageSize": 20, // 每页大小
+    "total": 100 // 总记录数
+  }
+}
+```
 
 ## 路由配置
 
@@ -189,6 +234,14 @@ npm run build
    - 检查 `vite.config.ts` 中的代理设置
    - 确保后端服务在指定端口运行
 
+3. **API 路径错误**
+   - 前端使用的 API 基础路径为 `/api/v1`
+   - 确保后端服务也使用相同的路径结构
+
+4. **响应结构不匹配**
+   - 所有 API 响应应遵循统一的格式，包含 `code`、`message` 和 `data` 字段
+   - 分页响应应包含 `items`、`page`、`pageSize` 和 `total` 字段
+
 ### 生产环境部署
 
 1. **资源路径问题**
@@ -204,4 +257,4 @@ npm run build
 如有问题或建议，请通过以下方式联系：
 
 - 提交 Issue
-- 发送邮件至 [admin@classmatehub.com](mailto:admin@classmatehub.com)
+- 发送邮件至 [1984885454@qq.com](mailto:1984885454@qq.com)
