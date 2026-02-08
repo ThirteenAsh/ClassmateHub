@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thirteenash.mapper.ClassMapper">
+    <resultMap id="ClassResultMap" type="com.thirteenash.entity.Clazz">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="start_year" property="startYear"/>
+        <result column="end_year" property="endYear"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.thirteenash.entity.Clazz" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO clazz (name, description, start_year, end_year, create_time, update_time)
+        VALUES (#{name}, #{description}, #{startYear}, #{endYear}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="selectAll" resultMap="ClassResultMap">
+        SELECT id, name, description, start_year, end_year, create_time, update_time
+        FROM clazz
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="ClassResultMap">
+        SELECT id, name, description, start_year, end_year, create_time, update_time
+        FROM clazz
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateById" parameterType="com.thirteenash.entity.Clazz">
+        UPDATE clazz
+        SET name = #{name},
+            description = #{description},
+            start_year = #{startYear},
+            end_year = #{endYear},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM clazz
+        WHERE id = #{id}
+    </delete>
+</mapper>

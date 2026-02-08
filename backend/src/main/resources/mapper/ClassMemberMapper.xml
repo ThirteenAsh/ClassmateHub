@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thirteenash.mapper.ClassMemberMapper">
+    <resultMap id="ClassMemberResultMap" type="com.thirteenash.entity.ClassMember">
+        <id column="id" property="id"/>
+        <result column="class_id" property="classId"/>
+        <result column="user_id" property="userId"/>
+        <result column="join_time" property="joinTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.thirteenash.entity.ClassMember" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO class_member (class_id, user_id, join_time)
+        VALUES (#{classId}, #{userId}, #{joinTime})
+    </insert>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO class_member (class_id, user_id, join_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.classId}, #{item.userId}, #{item.joinTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByClassIdAndUserId">
+        DELETE FROM class_member
+        WHERE class_id = #{classId} AND user_id = #{userId}
+    </delete>
+
+    <select id="selectByClassId" parameterType="java.lang.Long" resultType="com.thirteenash.vo.UserInfoVO">
+        SELECT
+            u.id,
+            u.username,
+            u.email,
+            u.phone,
+            u.real_name AS realName,
+            u.student_id AS studentId,
+            u.role,
+            u.avatar,
+            u.status,
+            u.create_time AS createTime,
+            u.update_time AS updateTime
+        FROM
+            class_member cm
+        LEFT JOIN
+            t_user u ON cm.user_id = u.id
+        WHERE
+            cm.class_id = #{classId}
+        ORDER BY
+            cm.join_time DESC
+    </select>
+
+    <select id="selectByClassIdAndUserId" parameterType="java.util.Map" resultMap="ClassMemberResultMap">
+        SELECT id, class_id, user_id, join_time
+        FROM class_member
+        WHERE class_id = #{classId} AND user_id = #{userId}
+    </select>
+</mapper>

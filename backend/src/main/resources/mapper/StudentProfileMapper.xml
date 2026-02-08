@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thirteenash.mapper.StudentProfileMapper">
+    <resultMap id="StudentProfileResultMap" type="com.thirteenash.entity.StudentProfile">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="basic_info" property="basicInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
+        <result column="contact_info" property="contactInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
+        <result column="education_info" property="educationInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
+        <result column="personal_info" property="personalInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
+        SELECT id, user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time
+        FROM student_profile
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAll" resultMap="StudentProfileResultMap">
+        SELECT id, user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time
+        FROM student_profile
+        ORDER BY create_time DESC
+    </select>
+
+    <insert id="insert" parameterType="com.thirteenash.entity.StudentProfile" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student_profile (user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time)
+        VALUES (#{userId}, #{basicInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{contactInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{educationInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{personalInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateByUserId" parameterType="com.thirteenash.entity.StudentProfile">
+        UPDATE student_profile
+        SET basic_info = #{basicInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
+            contact_info = #{contactInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
+            education_info = #{educationInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
+            personal_info = #{personalInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
+            update_time = #{updateTime}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteByUserId" parameterType="java.lang.Long">
+        DELETE FROM student_profile
+        WHERE user_id = #{userId}
+    </delete>
+</mapper>
