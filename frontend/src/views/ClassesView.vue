@@ -193,7 +193,7 @@ const deleteClass = async (classId: number) => {
     )
     
     const response = await classApi.deleteClass(classId)
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success('删除成功')
       loadClassList()
     } else {
@@ -229,7 +229,7 @@ const saveClass = async () => {
       })
     }
 
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success(currentClass.id ? '更新成功' : '创建成功')
       showCreateClassDialog.value = false
       resetCurrentClass()
@@ -270,17 +270,25 @@ onMounted(() => {
 <style scoped>
 .classes-container {
   padding: 2rem;
+  min-height: calc(100vh - 80px);
 }
 
 .classes-card {
   max-width: 1200px;
   margin: 0 auto;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .pagination {

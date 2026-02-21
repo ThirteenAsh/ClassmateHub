@@ -53,3 +53,5 @@ Desktop.ini
 # Log directories
 logs/
 *.log
+
+.sql

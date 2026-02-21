@@ -118,7 +118,7 @@ const passwordFormRef = ref()
 const loadUserInfo = async () => {
   try {
     const response = await authApi.getProfile()
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       userInfo.value = response.data.data
     } else {
       ElMessage.error('获取用户信息失败')
@@ -141,7 +141,7 @@ const handleChangePassword = async () => {
       newPassword: passwordForm.newPassword
     })
 
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success('密码修改成功')
       showChangePasswordDialog.value = false
       // 重置表单
@@ -173,11 +173,17 @@ onMounted(() => {
 <style scoped>
 .profile-container {
   padding: 2rem;
+  min-height: calc(100vh - 80px);
 }
 
 .profile-card {
   max-width: 800px;
   margin: 0 auto;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .card-header {

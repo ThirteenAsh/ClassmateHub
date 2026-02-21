@@ -260,7 +260,21 @@ const currentStudent = reactive<StudentProfile>({
 })
 
 const studentRules = {
-  // Basic info validation would go here
+  'basic.name': [
+    { required: true, message: '请输入姓名', trigger: 'blur' },
+    { min: 2, max: 20, message: '姓名长度应在2-20个字符之间', trigger: 'blur' }
+  ],
+  'basic.studentId': [
+    { required: true, message: '请输入学号', trigger: 'blur' },
+    { min: 6, max: 20, message: '学号长度应在6-20个字符之间', trigger: 'blur' }
+  ],
+  'basic.major': [
+    { required: true, message: '请输入专业', trigger: 'blur' },
+    { min: 2, max: 50, message: '专业名称长度应在2-50个字符之间', trigger: 'blur' }
+  ],
+  'contact.email': [
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+  ]
 }
 
 const studentFormRef = ref()
@@ -321,7 +335,7 @@ const deleteStudent = async (studentId: number) => {
     )
     
     const response = await studentApi.deleteStudentProfile(studentId)
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success('删除成功')
       loadStudentList()
     } else {
@@ -339,7 +353,8 @@ const saveStudent = async () => {
   if (!studentFormRef.value) return
 
   try {
-    // Note: We're not validating individual fields since they're nested
+    // 验证必填字段
+    await validateStudentForm()
     saving.value = true
 
     let response;
@@ -351,7 +366,7 @@ const saveStudent = async () => {
       response = await studentApi.createStudentProfile(currentStudent)
     }
 
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success(currentStudent.id ? '更新成功' : '创建成功')
       showCreateStudentDialog.value = false
       resetCurrentStudent()
@@ -365,6 +380,25 @@ const saveStudent = async () => {
   } finally {
     saving.value = false
   }
+}
+
+const validateStudentForm = async () => {
+  // 验证基本必填字段
+  if (!currentStudent.basic?.name) {
+    throw new Error('请输入姓名')
+  }
+  if (!currentStudent.basic?.studentId) {
+    throw new Error('请输入学号')
+  }
+  if (!currentStudent.basic?.major) {
+    throw new Error('请输入专业')
+  }
+  
+  // 手动验证表单
+  return studentFormRef.value.validate().catch((err: any) => {
+    console.error('Form validation error:', err)
+    throw err
+  })
 }
 
 const cancelStudentOperation = () => {
@@ -390,17 +424,25 @@ onMounted(() => {
 <style scoped>
 .students-container {
   padding: 2rem;
+  min-height: calc(100vh - 80px);
 }
 
 .students-card {
   max-width: 1400px;
   margin: 0 auto;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .pagination {

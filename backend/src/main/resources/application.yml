@@ -6,7 +6,7 @@ spring:
     name: classmatehub-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/classmatehub?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/classmatehub
     username: root
     password: 123456
     hikari:
