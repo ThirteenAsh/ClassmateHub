@@ -13,9 +13,18 @@ onMounted(() => {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #1f2933;
+  background: radial-gradient(circle at top left, #eef2ff 0, #e0f2fe 35%, #f9fafb 70%);
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f7fa;
 }
 </style>

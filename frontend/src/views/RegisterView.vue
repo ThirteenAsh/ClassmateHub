@@ -117,7 +117,7 @@ const handleRegister = async () => {
       password: registerForm.password
     })
 
-    if (response.data.code === 200) {
+    if (response.data.code === 0) {
       ElMessage.success('注册成功，请登录')
       router.push('/login')
     } else {
@@ -138,10 +138,13 @@ const handleRegister = async () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background: radial-gradient(circle at top left, #eef2ff 0, #e0f2fe 35%, #f9fafb 70%);
 }
 
 .register-form {
   width: 400px;
+  border-radius: 18px;
+  border: none;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
 }
 </style>
