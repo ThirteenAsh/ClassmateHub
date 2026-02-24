@@ -7,7 +7,6 @@
           <el-button 
             type="primary" 
             @click="showCreateClassDialog = true"
-            v-if="userStore.role === 'admin'"
           >
             新增班级
           </el-button>
@@ -27,14 +26,12 @@
             {{ formatDate(scope.row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="150">
           <template #default="scope">
-            <el-button size="small" @click="viewClass(scope.row.id)">查看</el-button>
             <el-button 
               size="small" 
               type="primary" 
               @click="editClass(scope.row)"
-              v-if="userStore.role === 'admin'"
             >
               编辑
             </el-button>
@@ -42,7 +39,6 @@
               size="small" 
               type="danger" 
               @click="deleteClass(scope.row.id)"
-              v-if="userStore.role === 'admin'"
             >
               删除
             </el-button>
@@ -83,6 +79,16 @@
             placeholder="请输入班级名称"
           />
         </el-form-item>
+        <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="currentClass.createTime"
+            type="datetime"
+            placeholder="请选择创建时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            style="width: 100%"
+          />
+        </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input 
             v-model="currentClass.description" 
@@ -104,16 +110,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { classApi } from '@/api'
-import { useUserStore } from '@/stores'
 
 interface ClassItem {
   id?: number
   name: string
-  description?: string
   createTime?: string
+  description?: string
 }
-
-const userStore = useUserStore()
 
 const classList = ref<ClassItem[]>([])
 const loading = ref(false)
@@ -170,11 +173,6 @@ const handleCurrentChange = (page: number) => {
   loadClassList()
 }
 
-const viewClass = (classId: number) => {
-  // 跳转到班级详情页面（如果存在的话）
-  console.log(`View class ${classId}`)
-}
-
 const editClass = (classItem: ClassItem) => {
   Object.assign(currentClass, classItem)
   showCreateClassDialog.value = true
@@ -219,12 +217,14 @@ const saveClass = async () => {
       // 更新班级
       response = await classApi.updateClass(currentClass.id, {
         name: currentClass.name,
+        createTime: currentClass.createTime,
         description: currentClass.description
       })
     } else {
       // 创建班级
       response = await classApi.createClass({
         name: currentClass.name,
+        createTime: currentClass.createTime,
         description: currentClass.description
       })
     }
@@ -253,6 +253,7 @@ const cancelClassOperation = () => {
 const resetCurrentClass = () => {
   currentClass.id = undefined
   currentClass.name = ''
+  currentClass.createTime = undefined
   currentClass.description = ''
 }
 

@@ -4,30 +4,34 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * 同学信息档案实体类
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentProfile {
     private Long id;
     
-    private Long userId; // 关联用户ID
+    private Long clazzId;
     
-    private Long clazzId; // 班级ID
+    private String name;
     
-    private BasicInfo basicInfo; // 基础信息
+    private String gender;
     
-    private ContactInfo contactInfo; // 联系方式
+    private LocalDate birthDate;
     
-    private EducationInfo educationInfo; // 学业信息
+    private String phone;
     
-    private PersonalInfo personalInfo; // 个性化信息
+    private String email;
     
-    private String avatar; // 头像
+    private String wechat;
+    
+    private String qq;
+    
+    private String message;
+    
+    private String avatar;
     
     private LocalDateTime createTime;
     

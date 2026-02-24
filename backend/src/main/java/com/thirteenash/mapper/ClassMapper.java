@@ -21,6 +21,16 @@ public interface ClassMapper {
     List<Clazz> selectAll();
 
     /**
+     * 分页查询班级
+     */
+    List<Clazz> selectByPage(Integer offset, Integer size);
+
+    /**
+     * 查询班级总数
+     */
+    Long selectCount();
+
+    /**
      * 根据ID查询班级
      */
     Clazz selectById(Long id);

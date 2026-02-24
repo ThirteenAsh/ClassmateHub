@@ -1,29 +1,28 @@
-package com.thirteenash.vo;
+package com.thirteenash.dto;
 
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
-public class StudentProfileVO {
-    private Long id;
+public class UpdateStudentProfileRequestDTO {
+    private BasicInfoDTO basic;
+
+    private ContactInfoDTO contact;
+
     private Long clazzId;
-    private BasicInfo basic;
-    private ContactInfo contact;
     private String message;
     private String avatar;
-    private LocalDateTime createTime;
 
     @Data
-    public static class BasicInfo {
+    public static class BasicInfoDTO {
         private String name;
         private String gender;
         private LocalDate birthDate;
     }
 
     @Data
-    public static class ContactInfo {
+    public static class ContactInfoDTO {
         private String phone;
         private String email;
         private String wechat;
