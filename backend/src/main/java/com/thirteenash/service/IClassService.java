@@ -1,11 +1,10 @@
 package com.thirteenash.service;
 
-import com.thirteenash.dto.AddClassMembersRequestDTO;
+import com.thirteenash.common.response.PageResponse;
 import com.thirteenash.dto.CreateClassRequestDTO;
+import com.thirteenash.dto.PageRequestDTO;
 import com.thirteenash.dto.UpdateClassRequestDTO;
-import com.thirteenash.entity.Clazz;
 import com.thirteenash.vo.ClassInfoVO;
-import com.thirteenash.vo.UserInfoVO;
 
 import java.util.List;
 
@@ -24,6 +23,11 @@ public interface IClassService {
     List<ClassInfoVO> getClassList();
 
     /**
+     * 分页获取班级列表
+     */
+    PageResponse<ClassInfoVO> getClassListByPage(PageRequestDTO pageRequestDTO);
+
+    /**
      * 获取班级详情
      */
     ClassInfoVO getClassById(Long classId);
@@ -37,19 +41,4 @@ public interface IClassService {
      * 删除班级
      */
     Boolean deleteClass(Long classId);
-
-    /**
-     * 获取班级成员列表
-     */
-    List<UserInfoVO> getClassMembers(Long classId);
-
-    /**
-     * 添加班级成员
-     */
-    Boolean addClassMembers(Long classId, AddClassMembersRequestDTO requestDTO);
-
-    /**
-     * 移除班级成员
-     */
-    Boolean removeClassMember(Long classId, Long userId);
 }

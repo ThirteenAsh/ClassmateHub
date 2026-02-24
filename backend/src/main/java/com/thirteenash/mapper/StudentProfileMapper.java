@@ -2,36 +2,25 @@ package com.thirteenash.mapper;
 
 import com.thirteenash.entity.StudentProfile;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * 同学信息Mapper
- */
 @Mapper
 public interface StudentProfileMapper {
-    /**
-     * 根据用户ID查询同学信息
-     */
-    StudentProfile selectByUserId(Long userId);
+    StudentProfile selectById(Long id);
 
-    /**
-     * 查询所有同学信息
-     */
     List<StudentProfile> selectAll();
 
-    /**
-     * 插入同学信息
-     */
     int insert(StudentProfile studentProfile);
 
-    /**
-     * 更新同学信息
-     */
-    int updateByUserId(StudentProfile studentProfile);
+    int updateById(StudentProfile studentProfile);
 
-    /**
-     * 删除同学信息
-     */
-    int deleteByUserId(Long userId);
+    int deleteById(Long id);
+
+    List<StudentProfile> selectByPage(@Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    Long selectCount();
+
+    Long countTotal();
 }

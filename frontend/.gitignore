@@ -55,3 +55,5 @@ logs/
 *.log
 
 .sql
+
+.trae

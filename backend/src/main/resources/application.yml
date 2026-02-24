@@ -23,12 +23,6 @@ mybatis:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# JWT配置
-jwt:
-  secret: classmatehubSecretKey # 用于签名的密钥
-  expire: 604800 # 7天过期时间(秒)
-
-# 日志配置
 logging:
   level:
     com.thirteenash.mapper: debug

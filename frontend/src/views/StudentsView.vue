@@ -3,12 +3,12 @@
     <el-card class="students-card">
       <template #header>
         <div class="card-header">
-          <span>学生信息管理</span>
+          <span>同学信息管理</span>
           <el-button 
             type="primary" 
             @click="showCreateStudentDialog = true"
           >
-            新增学生
+            新增同学
           </el-button>
         </div>
       </template>
@@ -19,13 +19,21 @@
         v-loading="loading"
       >
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="basic.name" label="姓名" />
-        <el-table-column prop="basic.studentId" label="学号" />
-        <el-table-column prop="basic.major" label="专业" />
-        <el-table-column prop="basic.graduationYear" label="毕业年份" />
-        <el-table-column label="操作" width="200">
+        <el-table-column prop="basic.name" label="姓名" width="120" />
+        <el-table-column prop="basic.gender" label="性别" width="80" />
+        <el-table-column label="班级" width="150">
           <template #default="scope">
-            <el-button size="small" @click="viewStudent(scope.row.id)">查看</el-button>
+            {{ getClassName(scope.row.clazzId) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="出生日期（阳历）" width="150">
+          <template #default="scope">
+            {{ formatDate(scope.row.basic.birthDate) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="contact.phone" label="电话" min-width="150" />
+        <el-table-column label="操作" width="150" fixed="right" align="left">
+          <template #default="scope">
             <el-button 
               size="small" 
               type="primary" 
@@ -58,10 +66,10 @@
       </div>
     </el-card>
     
-    <!-- 创建/编辑学生对话框 -->
+    <!-- 创建/编辑同学对话框 -->
     <el-dialog 
       v-model="showCreateStudentDialog" 
-      :title="currentStudent.id ? '编辑学生' : '新增学生'" 
+      :title="currentStudent.id ? '编辑同学' : '新增同学'" 
       width="800px"
       :close-on-click-modal="false"
     >
@@ -70,7 +78,6 @@
         :rules="studentRules" 
         ref="studentFormRef" 
         label-width="120px"
-        :inline="true"
         :label-position="'top'"
       >
         <el-divider content-position="left">基础信息</el-divider>
@@ -84,16 +91,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="学号" prop="basic.studentId">
-              <el-input 
-                v-model="currentStudent.basic.studentId" 
-                placeholder="请输入学号"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
             <el-form-item label="性别" prop="basic.gender">
               <el-select 
                 v-model="currentStudent.basic.gender" 
@@ -105,31 +102,15 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="出生日期" prop="basic.birthDate">
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="出生日期（阳历）" prop="basic.birthDate">
               <el-date-picker
                 v-model="currentStudent.basic.birthDate"
                 type="date"
                 placeholder="选择日期"
                 style="width: 100%"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="专业" prop="basic.major">
-              <el-input 
-                v-model="currentStudent.basic.major" 
-                placeholder="请输入专业"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="毕业年份" prop="basic.graduationYear">
-              <el-input 
-                v-model="currentStudent.basic.graduationYear" 
-                placeholder="请输入毕业年份"
               />
             </el-form-item>
           </el-col>
@@ -156,10 +137,10 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="微信" prop="contact.wechat">
+            <el-form-item label="微信号" prop="contact.wechat">
               <el-input 
                 v-model="currentStudent.contact.wechat" 
-                placeholder="请输入微信"
+                placeholder="请输入微信号"
               />
             </el-form-item>
           </el-col>
@@ -173,27 +154,54 @@
           </el-col>
         </el-row>
         
-        <el-divider content-position="left">学业信息</el-divider>
+        <el-divider content-position="left">班级信息</el-divider>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="学历" prop="education.degree">
+            <el-form-item label="第一次认识我是在哪个班？" prop="clazzId">
               <el-select 
-                v-model="currentStudent.education.degree" 
-                placeholder="请选择学历"
+                v-model="currentStudent.clazzId" 
+                placeholder="请选择班级"
                 style="width: 100%"
               >
-                <el-option label="专科" value="专科" />
-                <el-option label="本科" value="本科" />
-                <el-option label="硕士" value="硕士" />
-                <el-option label="博士" value="博士" />
+                <el-option 
+                  v-for="clazz in classList" 
+                  :key="clazz.id" 
+                  :label="clazz.name" 
+                  :value="clazz.id" 
+                >
+                  <div style="display: flex; align-items: center;">
+                    <span>{{ clazz.name }}</span>
+                    <span v-if="clazz.description" style="color: #909399; font-size: 12px; margin-left: 16px;">{{ clazz.description }}</span>
+                  </div>
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="入学年份" prop="education.admissionYear">
-              <el-input 
-                v-model="currentStudent.education.admissionYear" 
-                placeholder="请输入入学年份"
+        </el-row>
+        
+        <el-divider content-position="left">留言</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="留言" prop="message">
+              <el-input
+                v-model="currentStudent.message"
+                type="textarea"
+                placeholder="请输入留言（最多256个字符，请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~）"
+                :rows="4"
+                maxlength="256"
+                show-word-limit
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-divider content-position="left">头像</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="头像URL" prop="avatar">
+              <el-input
+                v-model="currentStudent.avatar"
+                placeholder="请输入头像URL（例如：https://example.com/avatar.jpg）"
               />
             </el-form-item>
           </el-col>
@@ -210,15 +218,12 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { studentApi } from '@/api'
+import { studentApi, classApi } from '@/api'
 
 interface BasicInfo {
   name?: string
-  studentId?: string
   gender?: string
   birthDate?: string
-  major?: string
-  graduationYear?: string
 }
 
 interface ContactInfo {
@@ -228,24 +233,26 @@ interface ContactInfo {
   qq?: string
 }
 
-interface EducationInfo {
-  degree?: string
-  admissionYear?: string
-}
-
 interface StudentProfile {
   id?: number
-  userId?: number
   clazzId?: number
   basic: BasicInfo
   contact: ContactInfo
-  education: EducationInfo
   personal?: any
   avatar?: string
+  message?: string
   createTime?: string
 }
 
+interface ClassItem {
+  id?: number
+  name: string
+  createTime?: string
+  description?: string
+}
+
 const studentList = ref<StudentProfile[]>([])
+const classList = ref<ClassItem[]>([])
 const loading = ref(false)
 const saving = ref(false)
 const currentPage = ref(1)
@@ -255,8 +262,7 @@ const showCreateStudentDialog = ref(false)
 
 const currentStudent = reactive<StudentProfile>({
   basic: {},
-  contact: {},
-  education: {}
+  contact: {}
 })
 
 const studentRules = {
@@ -264,13 +270,24 @@ const studentRules = {
     { required: true, message: '请输入姓名', trigger: 'blur' },
     { min: 2, max: 20, message: '姓名长度应在2-20个字符之间', trigger: 'blur' }
   ],
-  'basic.studentId': [
-    { required: true, message: '请输入学号', trigger: 'blur' },
-    { min: 6, max: 20, message: '学号长度应在6-20个字符之间', trigger: 'blur' }
+  'basic.gender': [
+    { required: true, message: '请选择性别', trigger: 'change' }
   ],
-  'basic.major': [
-    { required: true, message: '请输入专业', trigger: 'blur' },
-    { min: 2, max: 50, message: '专业名称长度应在2-50个字符之间', trigger: 'blur' }
+  'basic.birthDate': [
+    { required: true, message: '请选择出生日期', trigger: 'change' }
+  ],
+  'contact.phone': [
+    { required: true, message: '请输入电话', trigger: 'blur' }
+  ],
+  'contact.wechat': [
+    { required: true, message: '请输入微信号', trigger: 'blur' }
+  ],
+  'clazzId': [
+    { required: true, message: '请选择班级', trigger: 'change' }
+  ],
+  'message': [
+    { required: true, message: '请输入留言', trigger: 'blur' },
+    { max: 256, message: '留言不能超过256个字符', trigger: 'blur' }
   ],
   'contact.email': [
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
@@ -279,11 +296,30 @@ const studentRules = {
 
 const studentFormRef = ref()
 
+const loadClassList = async () => {
+  try {
+    const params = {
+      page: 0,
+      size: 100
+    }
+    
+    const response = await classApi.getClassList(params)
+    if (response.data.code === 0) {
+      classList.value = response.data.data.items || []
+    } else {
+      ElMessage.error(response.data.message || '获取班级列表失败')
+    }
+  } catch (error) {
+    console.error('Failed to load class list:', error)
+    ElMessage.error('获取班级列表失败')
+  }
+}
+
 const loadStudentList = async () => {
   loading.value = true
   try {
     const params = {
-      page: currentPage.value - 1, // 后端分页通常从0开始
+      page: currentPage.value - 1,
       size: pageSize.value
     }
     
@@ -292,11 +328,11 @@ const loadStudentList = async () => {
       studentList.value = response.data.data.items || []
       total.value = response.data.data.total || 0
     } else {
-      ElMessage.error(response.data.message || '获取学生列表失败')
+      ElMessage.error(response.data.message || '获取同学列表失败')
     }
   } catch (error) {
     console.error('Failed to load student list:', error)
-    ElMessage.error('获取学生列表失败')
+    ElMessage.error('获取同学列表失败')
   } finally {
     loading.value = false
   }
@@ -312,20 +348,23 @@ const handleCurrentChange = (page: number) => {
   loadStudentList()
 }
 
-const viewStudent = (studentId: number) => {
-  // 跳转到学生详情页面（如果存在的话）
-  console.log(`View student ${studentId}`)
-}
-
 const editStudent = (student: StudentProfile) => {
-  Object.assign(currentStudent, JSON.parse(JSON.stringify(student)))
+  const studentCopy = JSON.parse(JSON.stringify(student))
+  currentStudent.id = studentCopy.id
+  currentStudent.clazzId = studentCopy.clazzId
+  currentStudent.basic = studentCopy.basic || {}
+  currentStudent.contact = studentCopy.contact || {}
+  currentStudent.personal = studentCopy.personal || {}
+  currentStudent.avatar = studentCopy.avatar
+  currentStudent.message = studentCopy.message
+  currentStudent.createTime = studentCopy.createTime
   showCreateStudentDialog.value = true
 }
 
 const deleteStudent = async (studentId: number) => {
   try {
     await ElMessageBox.confirm(
-      '确定要删除这个学生信息吗？此操作不可恢复',
+      '确定要删除这个同学信息吗？此操作不可恢复',
       '警告',
       {
         confirmButtonText: '确定',
@@ -353,17 +392,31 @@ const saveStudent = async () => {
   if (!studentFormRef.value) return
 
   try {
-    // 验证必填字段
     await validateStudentForm()
     saving.value = true
 
+    const requestData = {
+      basic: {
+        name: currentStudent.basic?.name,
+        gender: currentStudent.basic?.gender,
+        birthDate: currentStudent.basic?.birthDate ? formatDateForApi(currentStudent.basic.birthDate) : undefined
+      },
+      contact: {
+        phone: currentStudent.contact?.phone,
+        email: currentStudent.contact?.email,
+        wechat: currentStudent.contact?.wechat,
+        qq: currentStudent.contact?.qq
+      },
+      clazzId: currentStudent.clazzId,
+      message: currentStudent.message,
+      avatar: currentStudent.avatar
+    }
+
     let response;
     if (currentStudent.id) {
-      // 更新学生信息
-      response = await studentApi.updateStudentProfile(currentStudent.id, currentStudent)
+      response = await studentApi.updateStudentProfile(currentStudent.id, requestData)
     } else {
-      // 创建学生信息
-      response = await studentApi.createStudentProfile(currentStudent)
+      response = await studentApi.createStudentProfile(requestData)
     }
 
     if (response.data.code === 0) {
@@ -382,19 +435,36 @@ const saveStudent = async () => {
   }
 }
 
+const formatDateForApi = (date: Date | string): string => {
+  if (typeof date === 'string') {
+    return date
+  }
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const validateStudentForm = async () => {
-  // 验证基本必填字段
   if (!currentStudent.basic?.name) {
     throw new Error('请输入姓名')
   }
-  if (!currentStudent.basic?.studentId) {
-    throw new Error('请输入学号')
+  if (!currentStudent.basic?.gender) {
+    throw new Error('请选择性别')
   }
-  if (!currentStudent.basic?.major) {
-    throw new Error('请输入专业')
+  if (!currentStudent.basic?.birthDate) {
+    throw new Error('请选择出生日期')
+  }
+  if (!currentStudent.contact?.phone) {
+    throw new Error('请输入电话')
+  }
+  if (!currentStudent.contact?.wechat) {
+    throw new Error('请输入微信号')
+  }
+  if (!currentStudent.clazzId) {
+    throw new Error('请选择班级')
   }
   
-  // 手动验证表单
   return studentFormRef.value.validate().catch((err: any) => {
     console.error('Form validation error:', err)
     throw err
@@ -410,13 +480,29 @@ const resetCurrentStudent = () => {
   currentStudent.id = undefined
   currentStudent.basic = {}
   currentStudent.contact = {}
-  currentStudent.education = {}
   currentStudent.personal = {}
   currentStudent.avatar = undefined
+  currentStudent.message = undefined
   currentStudent.createTime = undefined
 }
 
+const getClassName = (clazzId: number) => {
+  const clazz = classList.value.find(c => c.id === clazzId)
+  return clazz ? clazz.name : '-'
+}
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })
+}
+
 onMounted(() => {
+  loadClassList()
   loadStudentList()
 })
 </script>
@@ -453,5 +539,17 @@ onMounted(() => {
 
 .el-divider {
   margin: 20px 0;
+}
+
+.el-form {
+  padding: 0 20px;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+.el-row {
+  margin-bottom: 0;
 }
 </style>

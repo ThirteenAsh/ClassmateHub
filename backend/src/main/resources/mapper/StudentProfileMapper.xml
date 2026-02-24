@@ -6,44 +6,72 @@
 <mapper namespace="com.thirteenash.mapper.StudentProfileMapper">
     <resultMap id="StudentProfileResultMap" type="com.thirteenash.entity.StudentProfile">
         <id column="id" property="id"/>
-        <result column="user_id" property="userId"/>
-        <result column="basic_info" property="basicInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
-        <result column="contact_info" property="contactInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
-        <result column="education_info" property="educationInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
-        <result column="personal_info" property="personalInfo" typeHandler="com.thirteenash.handler.JsonTypeHandler"/>
+        <result column="clazz_id" property="clazzId"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="birth_date" property="birthDate"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="wechat" property="wechat"/>
+        <result column="qq" property="qq"/>
+        <result column="message" property="message"/>
+        <result column="avatar" property="avatar"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
-    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
-        SELECT id, user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time
+    <select id="selectById" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
+        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </select>
 
     <select id="selectAll" resultMap="StudentProfileResultMap">
-        SELECT id, user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time
+        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         ORDER BY create_time DESC
     </select>
 
     <insert id="insert" parameterType="com.thirteenash.entity.StudentProfile" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO student_profile (user_id, basic_info, contact_info, education_info, personal_info, create_time, update_time)
-        VALUES (#{userId}, #{basicInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{contactInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{educationInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{personalInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler}, #{createTime}, #{updateTime})
+        INSERT INTO student_profile (clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time)
+        VALUES (#{clazzId}, #{name}, #{gender}, #{birthDate}, #{phone}, #{email}, #{wechat}, #{qq}, #{message}, #{avatar}, #{createTime}, #{updateTime})
     </insert>
 
-    <update id="updateByUserId" parameterType="com.thirteenash.entity.StudentProfile">
+    <update id="updateById" parameterType="com.thirteenash.entity.StudentProfile">
         UPDATE student_profile
-        SET basic_info = #{basicInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
-            contact_info = #{contactInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
-            education_info = #{educationInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
-            personal_info = #{personalInfo,typeHandler=com.thirteenash.handler.JsonTypeHandler},
+        SET clazz_id = #{clazzId},
+            name = #{name},
+            gender = #{gender},
+            birth_date = #{birthDate},
+            phone = #{phone},
+            email = #{email},
+            wechat = #{wechat},
+            qq = #{qq},
+            message = #{message},
+            avatar = #{avatar},
             update_time = #{updateTime}
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </update>
 
-    <delete id="deleteByUserId" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM student_profile
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </delete>
+
+    <select id="selectByPage" resultMap="StudentProfileResultMap">
+        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
+        FROM student_profile
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM student_profile
+    </select>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM student_profile
+    </select>
 </mapper>

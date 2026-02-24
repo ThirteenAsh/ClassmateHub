@@ -1,31 +1,23 @@
 package com.thirteenash.service;
 
-import com.thirteenash.entity.StudentProfile;
+import com.thirteenash.common.response.PageResponse;
+import com.thirteenash.dto.CreateStudentProfileRequestDTO;
+import com.thirteenash.dto.PageRequestDTO;
+import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.vo.StudentProfileVO;
 
 import java.util.List;
 
-/**
- * 同学信息服务接口
- */
 public interface IStudentProfileService {
-    /**
-     * 获取同学列表
-     */
+    StudentProfileVO createStudentProfile(CreateStudentProfileRequestDTO requestDTO);
+
     List<StudentProfileVO> getStudentList();
 
-    /**
-     * 获取同学详情
-     */
-    StudentProfileVO getStudentById(Long userId);
+    StudentProfileVO getStudentById(Long id);
 
-    /**
-     * 更新同学信息
-     */
-    Boolean updateStudentProfile(Long userId, StudentProfile studentProfile);
+    Boolean updateStudentProfile(Long id, UpdateStudentProfileRequestDTO requestDTO);
 
-    /**
-     * 删除同学信息
-     */
-    Boolean deleteStudentProfile(Long userId);
+    Boolean deleteStudentProfile(Long id);
+
+    PageResponse<StudentProfileVO> getStudentListByPage(PageRequestDTO pageRequestDTO);
 }
