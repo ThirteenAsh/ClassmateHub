@@ -19,7 +19,7 @@
           </div>
           <el-button 
             type="primary" 
-            @click="showCreateStudentDialog = true"
+            @click="handleCreateStudent"
             class="cute-btn-primary"
           >
             新增同学
@@ -371,6 +371,11 @@ const handleCurrentChange = (page: number) => {
   loadStudentList()
 }
 
+const handleCreateStudent = () => {
+  resetCurrentStudent()
+  showCreateStudentDialog.value = true
+}
+
 const editStudent = (student: StudentProfile) => {
   const studentCopy = JSON.parse(JSON.stringify(student))
   currentStudent.id = studentCopy.id
@@ -506,6 +511,7 @@ const cancelStudentOperation = () => {
 
 const resetCurrentStudent = () => {
   currentStudent.id = undefined
+  currentStudent.clazzId = undefined
   currentStudent.basic = {}
   currentStudent.contact = {}
   currentStudent.personal = {}
@@ -539,133 +545,15 @@ onMounted(() => {
 })
 </script>
 
+<style scoped src="../styles/students.css"></style>
+
 <style scoped>
-* {
-  font-family: 'Nunito', 'Quicksand', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-}
-
-.students-container {
-  padding: 3rem 2rem;
-  min-height: 100vh;
-  background-color: #fdfbfb;
-  background-image: 
-    linear-gradient(rgba(189, 224, 254, 0.4) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(189, 224, 254, 0.4) 1px, transparent 1px);
-  background-size: 30px 30px;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-/* 悬浮光晕 - 蓝色系 */
-.decoration-circle {
-  position: absolute;
-  border-radius: 50%;
-  z-index: -1;
-  filter: blur(50px);
-  opacity: 0.5;
-  animation: float 6s ease-in-out infinite;
-}
-.circle-1 {
-  width: 400px; height: 400px;
-  background: #bde0fe;
-  top: -100px; left: -150px;
-}
-.circle-2 {
-  width: 350px; height: 350px;
-  background: #eef8ff;
-  bottom: -50px; right: -100px;
-  animation-delay: -3s;
-}
-
-/* 主卡片样式 */
-.students-card {
-  max-width: 1400px;
-  margin: 0 auto;
-  border: 4px solid #fff;
-  border-radius: 30px;
-  box-shadow: 0 12px 0px rgba(189, 224, 254, 0.3), 0 20px 40px rgba(0, 0, 0, 0.05);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
 :deep(.el-card__header) {
   border-bottom: 2px dashed #bde0fe;
   padding: 1.5rem 2rem;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.page-title {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #00b4d8;
-  letter-spacing: 1px;
-}
-
-/* 按钮样式重置 */
-.cute-btn-primary {
-  background: #00b4d8 !important;
-  border-color: #00b4d8 !important;
-  border-radius: 20px !important;
-  font-weight: 600;
-  padding: 10px 24px !important;
-  box-shadow: 0 4px 10px rgba(0, 180, 216, 0.3);
-  transition: all 0.3s ease;
-}
-.cute-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 180, 216, 0.4);
-  background: #48cae4 !important;
-}
-
-.cute-btn-default {
-  border-radius: 20px !important;
-  font-weight: 600;
-  border: 2px solid #eef8ff !important;
-  color: #4a4e69 !important;
-  transition: all 0.3s ease;
-}
-.cute-btn-default:hover {
-  background: #eef8ff !important;
-  border-color: #bde0fe !important;
-  color: #00b4d8 !important;
-}
-
-.cute-btn-small {
-  border-radius: 12px !important;
-  padding: 8px 16px !important;
-}
-
-.cute-btn-danger {
-  background: #eef8ff !important;
-  border-color: #bde0fe !important;
-  color: #00b4d8 !important;
-  box-shadow: none !important;
-}
-.cute-btn-danger:hover {
-  background: #ff758f !important;
-  border-color: #ff758f !important;
-  color: #fff !important;
-}
-
-/* 表格可爱化 */
-.cute-table {
-  border-radius: 16px;
-  overflow: hidden;
-  margin-top: 10px;
-}
 :deep(.el-table th.el-table__cell) {
   background-color: #eef8ff !important;
   color: #00b4d8 !important;
@@ -673,41 +561,31 @@ onMounted(() => {
   font-size: 1rem;
   border-bottom: 2px solid #bde0fe;
 }
+
 :deep(.el-table td.el-table__cell) {
   border-bottom: 1px dashed #f1f2f6;
   color: #4a4e69;
   font-weight: 500;
 }
+
 :deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
   background-color: #f6fbff !important;
 }
 
-.highlight-text {
-  font-weight: 700;
-  color: #4a4e69;
-  background: #eef8ff;
-  padding: 4px 12px;
-  border-radius: 12px;
-}
-
-/* 分页组件居中 & 圆润化 */
-.pagination {
-  margin-top: 2rem;
-  padding-bottom: 1rem;
-  display: flex;
-  justify-content: center;
-}
 :deep(.el-pagination.is-background .el-pager li) {
   border-radius: 10px;
 }
 
-/* 弹窗及表单可爱化 */
+/* 弹窗 */
+
 :deep(.cute-dialog) {
   border-radius: 24px !important;
   overflow: hidden;
   border: 4px solid #fff;
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  animation: fadeIn 0.1s ease-out;
 }
+
 :deep(.cute-dialog .el-dialog__header) {
   background: #eef8ff;
   margin-right: 0;
@@ -717,11 +595,17 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
 }
+
+:deep(.cute-dialog .el-dialog__body) {
+  padding: 24px 20px;
+}
+
 :deep(.cute-dialog .el-dialog__title) {
   font-weight: 800;
   color: #00b4d8;
   margin: 0;
 }
+
 :deep(.cute-dialog .el-dialog__headerbtn) {
   position: relative;
   top: 0;
@@ -732,12 +616,15 @@ onMounted(() => {
   border-radius: 50%;
   transition: all 0.3s ease;
 }
+
 :deep(.cute-dialog .el-dialog__headerbtn:hover) {
   background: #00b4d8;
 }
+
 :deep(.cute-dialog .el-dialog__headerbtn:hover .el-dialog__close) {
   color: #fff;
 }
+
 :deep(.cute-dialog .el-dialog__close) {
   color: #00b4d8;
   font-size: 18px;
@@ -745,40 +632,43 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
+/* 分割线 */
+
 :deep(.cute-divider .el-divider__text) {
   font-weight: 700;
   color: #00b4d8;
   background-color: #fff;
   padding: 0 15px;
 }
+
 :deep(.cute-divider.el-divider--horizontal) {
   border-top: 2px dashed #bde0fe;
 }
+
+/* 表单 */
 
 :deep(.cute-form .el-form-item__label) {
   font-weight: 600;
   color: #4a4e69;
 }
+
 :deep(.cute-form .el-input__wrapper),
 :deep(.cute-form .el-textarea__inner),
 :deep(.cute-form .el-select__wrapper) {
   border-radius: 12px;
   box-shadow: 0 0 0 1px #eef8ff inset;
 }
+
 :deep(.cute-form .el-input__wrapper.is-focus),
 :deep(.cute-form .el-textarea__inner:focus),
 :deep(.cute-form .el-select__wrapper.is-focused) {
   box-shadow: 0 0 0 2px #bde0fe inset !important;
 }
 
-/* 动画定义 */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
+/* 动画保留在组件内（供 :deep 使用） */
 
-@keyframes slideUp {
-  0% { transform: translateY(40px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
 }
 </style>

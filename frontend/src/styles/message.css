@@ -1,0 +1,51 @@
+/* 全局提示信息样式 */
+.el-message {
+  border-radius: 20px !important;
+  padding: 12px 20px !important;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease-out;
+}
+
+.el-message--success {
+  background: #67c23a !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.el-message--error {
+  background: #f56c6c !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.el-message--warning {
+  background: #e6a23c !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.el-message--info {
+  background: #909399 !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.el-message__icon {
+  color: #fff !important;
+}
+
+.el-message__content {
+  color: #fff !important;
+}
+
+/* 动画定义 */
+@keyframes slideDown {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
