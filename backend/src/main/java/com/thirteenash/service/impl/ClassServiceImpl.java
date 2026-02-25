@@ -45,18 +45,6 @@ public class ClassServiceImpl implements IClassService {
     }
 
     @Override
-    public List<ClassInfoVO> getClassList() {
-        List<Clazz> clazzList = classMapper.selectAll();
-        List<ClassInfoVO> classInfoVOList = new ArrayList<>();
-        for (Clazz clazz : clazzList) {
-            ClassInfoVO classInfoVO = new ClassInfoVO();
-            BeanUtils.copyProperties(clazz, classInfoVO);
-            classInfoVOList.add(classInfoVO);
-        }
-        return classInfoVOList;
-    }
-
-    @Override
     public PageResponse<ClassInfoVO> getClassListByPage(PageRequestDTO pageRequestDTO) {
         Integer page = pageRequestDTO.getPage();
         Integer size = pageRequestDTO.getSize();

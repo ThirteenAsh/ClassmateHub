@@ -18,11 +18,6 @@ public interface IClassService {
     ClassInfoVO createClass(CreateClassRequestDTO requestDTO);
 
     /**
-     * 获取班级列表
-     */
-    List<ClassInfoVO> getClassList();
-
-    /**
      * 分页获取班级列表
      */
     PageResponse<ClassInfoVO> getClassListByPage(PageRequestDTO pageRequestDTO);

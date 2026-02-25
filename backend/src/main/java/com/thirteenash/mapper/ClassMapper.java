@@ -16,11 +16,6 @@ public interface ClassMapper {
     int insert(Clazz clazz);
 
     /**
-     * 查询所有班级
-     */
-    List<Clazz> selectAll();
-
-    /**
      * 分页查询班级
      */
     List<Clazz> selectByPage(Integer offset, Integer size);

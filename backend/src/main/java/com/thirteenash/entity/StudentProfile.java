@@ -22,7 +22,9 @@ public class StudentProfile {
     private LocalDate birthDate;
     
     private String phone;
-    
+
+    private String university;
+
     private String email;
     
     private String wechat;

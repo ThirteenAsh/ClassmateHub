@@ -32,6 +32,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         studentProfile.setName(requestDTO.getBasic().getName());
         studentProfile.setGender(requestDTO.getBasic().getGender());
         studentProfile.setBirthDate(requestDTO.getBasic().getBirthDate());
+        studentProfile.setUniversity(requestDTO.getBasic().getUniversity());
         studentProfile.setPhone(requestDTO.getContact().getPhone());
         studentProfile.setEmail(requestDTO.getContact().getEmail());
         studentProfile.setWechat(requestDTO.getContact().getWechat());
@@ -87,6 +88,9 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
             }
             if (requestDTO.getBasic().getBirthDate() != null) {
                 existingProfile.setBirthDate(requestDTO.getBasic().getBirthDate());
+            }
+            if (requestDTO.getBasic().getUniversity() != null) {
+                existingProfile.setUniversity(requestDTO.getBasic().getUniversity());
             }
         }
 
@@ -170,6 +174,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         basic.setName(studentProfile.getName());
         basic.setGender(studentProfile.getGender());
         basic.setBirthDate(studentProfile.getBirthDate());
+        basic.setUniversity(studentProfile.getUniversity());
         vo.setBasic(basic);
 
         StudentProfileVO.ContactInfo contact = new StudentProfileVO.ContactInfo();

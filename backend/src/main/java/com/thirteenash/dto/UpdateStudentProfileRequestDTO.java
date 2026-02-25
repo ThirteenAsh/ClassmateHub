@@ -19,6 +19,7 @@ public class UpdateStudentProfileRequestDTO {
         private String name;
         private String gender;
         private LocalDate birthDate;
+        private String university;
     }
 
     @Data
