@@ -19,6 +19,7 @@ public class StudentProfileVO {
     public static class BasicInfo {
         private String name;
         private String gender;
+        private String university;
         private LocalDate birthDate;
     }
 

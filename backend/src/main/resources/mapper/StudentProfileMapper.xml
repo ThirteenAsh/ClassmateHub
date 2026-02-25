@@ -10,6 +10,7 @@
         <result column="name" property="name"/>
         <result column="gender" property="gender"/>
         <result column="birth_date" property="birthDate"/>
+        <result column="university" property="university"/>
         <result column="phone" property="phone"/>
         <result column="email" property="email"/>
         <result column="wechat" property="wechat"/>
@@ -21,20 +22,20 @@
     </resultMap>
 
     <select id="selectById" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         WHERE id = #{id}
     </select>
 
     <select id="selectAll" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         ORDER BY create_time DESC
     </select>
 
     <insert id="insert" parameterType="com.thirteenash.entity.StudentProfile" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO student_profile (clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time)
-        VALUES (#{clazzId}, #{name}, #{gender}, #{birthDate}, #{phone}, #{email}, #{wechat}, #{qq}, #{message}, #{avatar}, #{createTime}, #{updateTime})
+        INSERT INTO student_profile (clazz_id, name, gender, birth_date, phone, university, email, wechat, qq, message, avatar, create_time, update_time)
+        VALUES (#{clazzId}, #{name}, #{gender}, #{birthDate}, #{phone}, #{university}, #{email}, #{wechat}, #{qq}, #{message}, #{avatar}, #{createTime}, #{updateTime})
     </insert>
 
     <update id="updateById" parameterType="com.thirteenash.entity.StudentProfile">
@@ -44,6 +45,7 @@
             gender = #{gender},
             birth_date = #{birthDate},
             phone = #{phone},
+            university = #{university},
             email = #{email},
             wechat = #{wechat},
             qq = #{qq},
@@ -59,9 +61,9 @@
     </delete>
 
     <select id="selectByPage" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
-        ORDER BY create_time DESC
+        ORDER BY id ASC
         LIMIT #{offset}, #{pageSize}
     </select>
 

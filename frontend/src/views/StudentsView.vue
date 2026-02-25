@@ -1,12 +1,26 @@
 <template>
   <div class="students-container">
+    <div class="decoration-circle circle-1"></div>
+    <div class="decoration-circle circle-2"></div>
+
     <el-card class="students-card">
       <template #header>
         <div class="card-header">
-          <span>同学信息管理</span>
+          <div class="header-left">
+            <el-button 
+              type="default" 
+              :icon="ArrowLeft"
+              @click="goBack"
+              class="back-button cute-btn-default"
+            >
+              返回
+            </el-button>
+            <span class="page-title">同学信息管理</span>
+          </div>
           <el-button 
             type="primary" 
             @click="showCreateStudentDialog = true"
+            class="cute-btn-primary"
           >
             新增同学
           </el-button>
@@ -17,26 +31,43 @@
         :data="studentList" 
         style="width: 100%" 
         v-loading="loading"
+        class="cute-table"
       >
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="basic.name" label="姓名" width="120" />
-        <el-table-column prop="basic.gender" label="性别" width="80" />
-        <el-table-column label="班级" width="150">
+        <el-table-column prop="id" label="ID" width="80" align="center" />
+        <el-table-column label="姓名" width="120" align="center">
+          <template #default="scope">
+            <span class="highlight-text">{{ scope.row.basic.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="性别" width="80" align="center">
+          <template #default="scope">
+            <el-tag :type="scope.row.basic.gender === '男' ? 'primary' : 'danger'" effect="light" round>
+              {{ scope.row.basic.gender }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="班级" width="150" align="center">
           <template #default="scope">
             {{ getClassName(scope.row.clazzId) }}
           </template>
         </el-table-column>
-        <el-table-column label="出生日期（阳历）" width="150">
+        <el-table-column label="出生日期" width="150" align="center">
           <template #default="scope">
             {{ formatDate(scope.row.basic.birthDate) }}
           </template>
         </el-table-column>
-        <el-table-column prop="contact.phone" label="电话" min-width="150" />
-        <el-table-column label="操作" width="150" fixed="right" align="left">
+        <el-table-column label="大学" min-width="150" align="center">
+          <template #default="scope">
+            {{ scope.row.basic.university || '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="contact.phone" label="电话" min-width="150" align="center" />
+        <el-table-column label="操作" width="180" fixed="right" align="center">
           <template #default="scope">
             <el-button 
               size="small" 
               type="primary" 
+              class="cute-btn-small"
               @click="editStudent(scope.row)"
             >
               编辑
@@ -44,6 +75,7 @@
             <el-button 
               size="small" 
               type="danger" 
+              class="cute-btn-small cute-btn-danger"
               @click="deleteStudent(scope.row.id)"
             >
               删除
@@ -52,7 +84,6 @@
         </el-table-column>
       </el-table>
       
-      <!-- 分页 -->
       <div class="pagination">
         <el-pagination
           v-model:current-page="currentPage"
@@ -66,12 +97,12 @@
       </div>
     </el-card>
     
-    <!-- 创建/编辑同学对话框 -->
     <el-dialog 
       v-model="showCreateStudentDialog" 
-      :title="currentStudent.id ? '编辑同学' : '新增同学'" 
+      :title="currentStudent.id ? '🐬 编辑同学' : '🐬 新增同学'" 
       width="800px"
       :close-on-click-modal="false"
+      class="cute-dialog"
     >
       <el-form 
         :model="currentStudent" 
@@ -79,24 +110,18 @@
         ref="studentFormRef" 
         label-width="120px"
         :label-position="'top'"
+        class="cute-form"
       >
-        <el-divider content-position="left">基础信息</el-divider>
+        <el-divider content-position="left" class="cute-divider">🌟 基础信息</el-divider>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="姓名" prop="basic.name">
-              <el-input 
-                v-model="currentStudent.basic.name" 
-                placeholder="请输入姓名"
-              />
+              <el-input v-model="currentStudent.basic.name" placeholder="请输入姓名" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="性别" prop="basic.gender">
-              <el-select 
-                v-model="currentStudent.basic.gender" 
-                placeholder="请选择性别"
-                style="width: 100%"
-              >
+              <el-select v-model="currentStudent.basic.gender" placeholder="请选择性别" style="width: 100%">
                 <el-option label="男" value="男" />
                 <el-option label="女" value="女" />
               </el-select>
@@ -104,7 +129,7 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="出生日期（阳历）" prop="basic.birthDate">
               <el-date-picker
                 v-model="currentStudent.basic.birthDate"
@@ -114,55 +139,44 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="大学" prop="basic.university">
+              <el-input v-model="currentStudent.basic.university" placeholder="请输入大学名称" />
+            </el-form-item>
+          </el-col>
         </el-row>
         
-        <el-divider content-position="left">联系方式</el-divider>
+        <el-divider content-position="left" class="cute-divider">📱 联系方式</el-divider>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="电话" prop="contact.phone">
-              <el-input 
-                v-model="currentStudent.contact.phone" 
-                placeholder="请输入电话"
-              />
+              <el-input v-model="currentStudent.contact.phone" placeholder="请输入电话" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="contact.email">
-              <el-input 
-                v-model="currentStudent.contact.email" 
-                placeholder="请输入邮箱"
-              />
+              <el-input v-model="currentStudent.contact.email" placeholder="请输入邮箱" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="微信号" prop="contact.wechat">
-              <el-input 
-                v-model="currentStudent.contact.wechat" 
-                placeholder="请输入微信号"
-              />
+              <el-input v-model="currentStudent.contact.wechat" placeholder="请输入微信号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="QQ" prop="contact.qq">
-              <el-input 
-                v-model="currentStudent.contact.qq" 
-                placeholder="请输入QQ"
-              />
+              <el-input v-model="currentStudent.contact.qq" placeholder="请输入QQ" />
             </el-form-item>
           </el-col>
         </el-row>
         
-        <el-divider content-position="left">班级信息</el-divider>
+        <el-divider content-position="left" class="cute-divider">🏫 班级信息</el-divider>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="第一次认识我是在哪个班？" prop="clazzId">
-              <el-select 
-                v-model="currentStudent.clazzId" 
-                placeholder="请选择班级"
-                style="width: 100%"
-              >
+              <el-select v-model="currentStudent.clazzId" placeholder="请选择班级" style="width: 100%">
                 <el-option 
                   v-for="clazz in classList" 
                   :key="clazz.id" 
@@ -171,7 +185,8 @@
                 >
                   <div style="display: flex; align-items: center;">
                     <span>{{ clazz.name }}</span>
-                    <span v-if="clazz.description" style="color: #909399; font-size: 12px; margin-left: 16px;">{{ clazz.description }}</span>
+                    <span v-if="clazz.description" style="color: #9fa0b3; font-size: 12px; margin-left: 16px;">{{ clazz.description }}</span>
+                    <span v-if="clazz.createTime" style="color: #9fa0b3; font-size: 12px; margin-left: 16px;">{{ formatDate(clazz.createTime) }}</span>
                   </div>
                 </el-option>
               </el-select>
@@ -179,14 +194,14 @@
           </el-col>
         </el-row>
         
-        <el-divider content-position="left">留言</el-divider>
+        <el-divider content-position="left" class="cute-divider">💌 留言与头像</el-divider>
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="留言" prop="message">
               <el-input
                 v-model="currentStudent.message"
                 type="textarea"
-                placeholder="请输入留言（最多256个字符，请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~）"
+                placeholder="请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~"
                 :rows="4"
                 maxlength="256"
                 show-word-limit
@@ -194,8 +209,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-divider content-position="left">头像</el-divider>
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="头像URL" prop="avatar">
@@ -208,8 +221,10 @@
         </el-row>
       </el-form>
       <template #footer>
-        <el-button @click="cancelStudentOperation">取消</el-button>
-        <el-button type="primary" @click="saveStudent" :loading="saving">确定</el-button>
+        <div class="dialog-footer">
+          <el-button @click="cancelStudentOperation" class="cute-btn-default">取消</el-button>
+          <el-button type="primary" @click="saveStudent" :loading="saving" class="cute-btn-primary">确定</el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -217,13 +232,18 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 import { studentApi, classApi } from '@/api'
+
+const router = useRouter()
 
 interface BasicInfo {
   name?: string
   gender?: string
   birthDate?: string
+  university?: string
 }
 
 interface ContactInfo {
@@ -276,11 +296,14 @@ const studentRules = {
   'basic.birthDate': [
     { required: true, message: '请选择出生日期', trigger: 'change' }
   ],
+  'basic.university': [
+    { required: true, message: '请输入大学名称', trigger: 'blur' }
+  ],
   'contact.phone': [
     { required: true, message: '请输入电话', trigger: 'blur' }
   ],
-  'contact.wechat': [
-    { required: true, message: '请输入微信号', trigger: 'blur' }
+  'contact.qq': [
+    { required: true, message: '请输入QQ', trigger: 'blur' }
   ],
   'clazzId': [
     { required: true, message: '请选择班级', trigger: 'change' }
@@ -399,7 +422,8 @@ const saveStudent = async () => {
       basic: {
         name: currentStudent.basic?.name,
         gender: currentStudent.basic?.gender,
-        birthDate: currentStudent.basic?.birthDate ? formatDateForApi(currentStudent.basic.birthDate) : undefined
+        birthDate: currentStudent.basic?.birthDate ? formatDateForApi(currentStudent.basic.birthDate) : undefined,
+        university: currentStudent.basic?.university
       },
       contact: {
         phone: currentStudent.contact?.phone,
@@ -429,7 +453,11 @@ const saveStudent = async () => {
     }
   } catch (error) {
     console.error('Save student error:', error)
-    ElMessage.error(currentStudent.id ? '更新失败' : '创建失败')
+    if (error instanceof Error && (error.message.includes('请输入') || error.message.includes('请选择'))) {
+      ElMessage.error('请填写所有必填项')
+    } else {
+      ElMessage.error(currentStudent.id ? '更新失败' : '创建失败')
+    }
   } finally {
     saving.value = false
   }
@@ -458,8 +486,8 @@ const validateStudentForm = async () => {
   if (!currentStudent.contact?.phone) {
     throw new Error('请输入电话')
   }
-  if (!currentStudent.contact?.wechat) {
-    throw new Error('请输入微信号')
+  if (!currentStudent.contact?.qq) {
+    throw new Error('请输入QQ')
   }
   if (!currentStudent.clazzId) {
     throw new Error('请选择班级')
@@ -501,6 +529,10 @@ const formatDate = (dateString: string) => {
   })
 }
 
+const goBack = () => {
+  router.push('/')
+}
+
 onMounted(() => {
   loadClassList()
   loadStudentList()
@@ -508,48 +540,245 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.students-container {
-  padding: 2rem;
-  min-height: calc(100vh - 80px);
+* {
+  font-family: 'Nunito', 'Quicksand', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
+.students-container {
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  background-color: #fdfbfb;
+  background-image: 
+    linear-gradient(rgba(189, 224, 254, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(189, 224, 254, 0.4) 1px, transparent 1px);
+  background-size: 30px 30px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 悬浮光晕 - 蓝色系 */
+.decoration-circle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  filter: blur(50px);
+  opacity: 0.5;
+  animation: float 6s ease-in-out infinite;
+}
+.circle-1 {
+  width: 400px; height: 400px;
+  background: #bde0fe;
+  top: -100px; left: -150px;
+}
+.circle-2 {
+  width: 350px; height: 350px;
+  background: #eef8ff;
+  bottom: -50px; right: -100px;
+  animation-delay: -3s;
+}
+
+/* 主卡片样式 */
 .students-card {
   max-width: 1400px;
   margin: 0 auto;
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-  overflow: hidden;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 4px solid #fff;
+  border-radius: 30px;
+  box-shadow: 0 12px 0px rgba(189, 224, 254, 0.3), 0 20px 40px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:deep(.el-card__header) {
+  border-bottom: 2px dashed #bde0fe;
+  padding: 1.5rem 2rem;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.1rem;
-  font-weight: 600;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #00b4d8;
+  letter-spacing: 1px;
+}
+
+/* 按钮样式重置 */
+.cute-btn-primary {
+  background: #00b4d8 !important;
+  border-color: #00b4d8 !important;
+  border-radius: 20px !important;
+  font-weight: 600;
+  padding: 10px 24px !important;
+  box-shadow: 0 4px 10px rgba(0, 180, 216, 0.3);
+  transition: all 0.3s ease;
+}
+.cute-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 180, 216, 0.4);
+  background: #48cae4 !important;
+}
+
+.cute-btn-default {
+  border-radius: 20px !important;
+  font-weight: 600;
+  border: 2px solid #eef8ff !important;
+  color: #4a4e69 !important;
+  transition: all 0.3s ease;
+}
+.cute-btn-default:hover {
+  background: #eef8ff !important;
+  border-color: #bde0fe !important;
+  color: #00b4d8 !important;
+}
+
+.cute-btn-small {
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+}
+
+.cute-btn-danger {
+  background: #eef8ff !important;
+  border-color: #bde0fe !important;
+  color: #00b4d8 !important;
+  box-shadow: none !important;
+}
+.cute-btn-danger:hover {
+  background: #ff758f !important;
+  border-color: #ff758f !important;
+  color: #fff !important;
+}
+
+/* 表格可爱化 */
+.cute-table {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+:deep(.el-table th.el-table__cell) {
+  background-color: #eef8ff !important;
+  color: #00b4d8 !important;
+  font-weight: 700;
+  font-size: 1rem;
+  border-bottom: 2px solid #bde0fe;
+}
+:deep(.el-table td.el-table__cell) {
+  border-bottom: 1px dashed #f1f2f6;
+  color: #4a4e69;
+  font-weight: 500;
+}
+:deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
+  background-color: #f6fbff !important;
+}
+
+.highlight-text {
+  font-weight: 700;
+  color: #4a4e69;
+  background: #eef8ff;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+/* 分页组件居中 & 圆润化 */
 .pagination {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
   display: flex;
   justify-content: center;
 }
-
-.el-divider {
-  margin: 20px 0;
+:deep(.el-pagination.is-background .el-pager li) {
+  border-radius: 10px;
 }
 
-.el-form {
-  padding: 0 20px;
+/* 弹窗及表单可爱化 */
+:deep(.cute-dialog) {
+  border-radius: 24px !important;
+  overflow: hidden;
+  border: 4px solid #fff;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+:deep(.cute-dialog .el-dialog__header) {
+  background: #eef8ff;
+  margin-right: 0;
+  padding: 20px;
+  border-bottom: 2px dashed #bde0fe;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+:deep(.cute-dialog .el-dialog__title) {
+  font-weight: 800;
+  color: #00b4d8;
+  margin: 0;
+}
+:deep(.cute-dialog .el-dialog__headerbtn) {
+  position: relative;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+:deep(.cute-dialog .el-dialog__headerbtn:hover) {
+  background: #00b4d8;
+}
+:deep(.cute-dialog .el-dialog__headerbtn:hover .el-dialog__close) {
+  color: #fff;
+}
+:deep(.cute-dialog .el-dialog__close) {
+  color: #00b4d8;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
-.el-form-item {
-  margin-bottom: 20px;
+:deep(.cute-divider .el-divider__text) {
+  font-weight: 700;
+  color: #00b4d8;
+  background-color: #fff;
+  padding: 0 15px;
+}
+:deep(.cute-divider.el-divider--horizontal) {
+  border-top: 2px dashed #bde0fe;
 }
 
-.el-row {
-  margin-bottom: 0;
+:deep(.cute-form .el-form-item__label) {
+  font-weight: 600;
+  color: #4a4e69;
+}
+:deep(.cute-form .el-input__wrapper),
+:deep(.cute-form .el-textarea__inner),
+:deep(.cute-form .el-select__wrapper) {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px #eef8ff inset;
+}
+:deep(.cute-form .el-input__wrapper.is-focus),
+:deep(.cute-form .el-textarea__inner:focus),
+:deep(.cute-form .el-select__wrapper.is-focused) {
+  box-shadow: 0 0 0 2px #bde0fe inset !important;
+}
+
+/* 动画定义 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 </style>

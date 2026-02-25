@@ -20,6 +20,7 @@ public class CreateStudentProfileRequestDTO {
 
         private String gender;
         private LocalDate birthDate;
+        private String university;
     }
 
     @Data
