@@ -98,7 +98,7 @@ ClassmateHub/
 
 ## 快速开始
 
-### 环境要求
+### 基本运行环境要求
 - Java 17 或更高版本
 - Node.js 16 或更高版本
 - MySQL 8.0 或更高版本
@@ -106,7 +106,7 @@ ClassmateHub/
 
 ### 前后端启动
 
-查看前后端中对应的Readme文件
+若已安装基本运行环境，直接运行前后端中的`RunBackend.bat`以及`RunFrontend.bat`即可快速启动服务
 
 ## 使用说明
 
