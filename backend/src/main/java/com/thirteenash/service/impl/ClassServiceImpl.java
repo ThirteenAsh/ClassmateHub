@@ -26,6 +26,9 @@ public class ClassServiceImpl implements IClassService {
     @Autowired
     private ClassMapper classMapper;
 
+    /**
+     * 创建班级
+     */
     @Override
     public ClassInfoVO createClass(CreateClassRequestDTO requestDTO) {
         Clazz clazz = new Clazz();
@@ -44,6 +47,9 @@ public class ClassServiceImpl implements IClassService {
         return classInfoVO;
     }
 
+    /**
+     * 获取班级列表
+     */
     @Override
     public PageResponse<ClassInfoVO> getClassListByPage(PageRequestDTO pageRequestDTO) {
         Integer page = pageRequestDTO.getPage();
@@ -63,6 +69,9 @@ public class ClassServiceImpl implements IClassService {
         return new PageResponse<>(classInfoVOList, page, size, total);
     }
 
+    /**
+     * 获取班级详情
+     */
     @Override
     public ClassInfoVO getClassById(Long classId) {
         Clazz clazz = classMapper.selectById(classId);
@@ -75,6 +84,9 @@ public class ClassServiceImpl implements IClassService {
         return classInfoVO;
     }
 
+    /**
+     * 更新班级信息
+     */
     @Override
     public Boolean updateClass(Long classId, UpdateClassRequestDTO requestDTO) {
         Clazz clazz = classMapper.selectById(classId);
@@ -97,6 +109,9 @@ public class ClassServiceImpl implements IClassService {
         return result > 0;
     }
 
+    /**
+     * 删除班级
+     */
     @Override
     public Boolean deleteClass(Long classId) {
         // 查找班级

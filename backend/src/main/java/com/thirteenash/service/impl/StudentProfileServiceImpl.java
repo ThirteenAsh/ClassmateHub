@@ -2,13 +2,18 @@ package com.thirteenash.service.impl;
 
 import com.thirteenash.common.exception.BusinessException;
 import com.thirteenash.common.response.PageResponse;
+import com.thirteenash.dto.ClassStudentCountDTO;
 import com.thirteenash.dto.CreateStudentProfileRequestDTO;
+import com.thirteenash.dto.GenderCountDTO;
 import com.thirteenash.dto.PageRequestDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.entity.StudentProfile;
 import com.thirteenash.mapper.StudentProfileMapper;
 import com.thirteenash.service.IStudentProfileService;
+import com.thirteenash.vo.ClassStatisticsVO;
+import com.thirteenash.vo.GenderRatioVO;
 import com.thirteenash.vo.StudentProfileVO;
+import com.thirteenash.vo.StudentStatisticsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +30,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
     @Autowired
     private StudentProfileMapper studentProfileMapper;
 
+    // 创建同学信息
     @Override
     public StudentProfileVO createStudentProfile(CreateStudentProfileRequestDTO requestDTO) {
         StudentProfile studentProfile = new StudentProfile();
@@ -52,16 +58,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return convertToVO(studentProfile);
     }
 
-    @Override
-    public List<StudentProfileVO> getStudentList() {
-        List<StudentProfile> studentProfiles = studentProfileMapper.selectAll();
-        List<StudentProfileVO> studentProfileVOs = new ArrayList<>();
-        for (StudentProfile studentProfile : studentProfiles) {
-            studentProfileVOs.add(convertToVO(studentProfile));
-        }
-        return studentProfileVOs;
-    }
-
+    // 获取同学信息
     @Override
     public StudentProfileVO getStudentById(Long id) {
         StudentProfile studentProfile = studentProfileMapper.selectById(id);
@@ -72,6 +69,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return convertToVO(studentProfile);
     }
 
+    // 更新同学信息
     @Override
     public Boolean updateStudentProfile(Long id, UpdateStudentProfileRequestDTO requestDTO) {
         StudentProfile existingProfile = studentProfileMapper.selectById(id);
@@ -127,6 +125,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return result > 0;
     }
 
+    // 删除同学信息
     @Override
     public Boolean deleteStudentProfile(Long id) {
         StudentProfile existingProfile = studentProfileMapper.selectById(id);
@@ -138,6 +137,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return result > 0;
     }
 
+    // 分页获取同学列表
     @Override
     public PageResponse<StudentProfileVO> getStudentListByPage(PageRequestDTO pageRequestDTO) {
         Integer page = pageRequestDTO.getPage();
@@ -162,6 +162,7 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return new PageResponse<>(studentProfileVOs, page, size, total);
     }
 
+    // 转换成VO
     private StudentProfileVO convertToVO(StudentProfile studentProfile) {
         StudentProfileVO vo = new StudentProfileVO();
         vo.setId(studentProfile.getId());
@@ -185,5 +186,45 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         vo.setContact(contact);
 
         return vo;
+    }
+
+    // 获取同学统计信息
+    @Override
+    public StudentStatisticsVO getStudentStatistics() {
+        StudentStatisticsVO statisticsVO = new StudentStatisticsVO();
+
+        // 获取总人数
+        Long totalCount = studentProfileMapper.countTotal();
+        statisticsVO.setTotalCount(totalCount);
+
+        // 获取各班级的同学数量
+        List<ClassStudentCountDTO> classCountList = studentProfileMapper.countStudentsByClass();
+        List<ClassStatisticsVO> classStatisticsList = new ArrayList<>();
+        for (ClassStudentCountDTO dto : classCountList) {
+            ClassStatisticsVO classVO = new ClassStatisticsVO();
+            classVO.setClassId(dto.getClazzId());
+            classVO.setClassName(dto.getClazzName());
+            classVO.setStudentCount(dto.getStudentCount());
+            classStatisticsList.add(classVO);
+        }
+        statisticsVO.setClassStatistics(classStatisticsList);
+
+        // 获取性别比例
+        List<GenderCountDTO> genderCountList = studentProfileMapper.countStudentsByGender();
+        List<GenderRatioVO> genderRatioList = new ArrayList<>();
+        if (totalCount != null && totalCount > 0) {
+            for (GenderCountDTO dto : genderCountList) {
+                GenderRatioVO ratioVO = new GenderRatioVO();
+                ratioVO.setGender(dto.getGender());
+                ratioVO.setCount(dto.getCount());
+                // 计算占比，保留两位小数
+                Double ratio = (double) dto.getCount() / totalCount * 100;
+                ratioVO.setRatio(Math.round(ratio * 100.0) / 100.0);
+                genderRatioList.add(ratioVO);
+            }
+        }
+        statisticsVO.setGenderRatios(genderRatioList);
+
+        return statisticsVO;
     }
 }
