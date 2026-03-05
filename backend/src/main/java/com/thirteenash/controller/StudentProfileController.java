@@ -7,6 +7,7 @@ import com.thirteenash.dto.PageRequestDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.service.IStudentProfileService;
 import com.thirteenash.vo.StudentProfileVO;
+import com.thirteenash.vo.StudentStatisticsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,9 @@ public class StudentProfileController {
         return Result.success(studentProfileVO);
     }
 
+    /**
+     * 获取同学列表
+     */
     @GetMapping
     public Result<PageResponse<StudentProfileVO>> getStudentList(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
         PageRequestDTO pageRequestDTO = new PageRequestDTO();
@@ -63,5 +67,15 @@ public class StudentProfileController {
     public Result<Boolean> deleteStudentProfile(@PathVariable Long id) {
         Boolean success = studentProfileService.deleteStudentProfile(id);
         return Result.success(success);
+    }
+
+    /**
+     * 获取同学统计信息
+     * 包括：同学总数、各班级同学数量、性别比例
+     */
+    @GetMapping("/statistics/summary")
+    public Result<StudentStatisticsVO> getStudentStatistics() {
+        StudentStatisticsVO statistics = studentProfileService.getStudentStatistics();
+        return Result.success(statistics);
     }
 }

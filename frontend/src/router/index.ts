@@ -4,8 +4,8 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/HomeView.vue')
+    name: 'Square',
+    component: () => import('@/views/SquareView.vue')
   },
   {
     path: '/classes',
@@ -16,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/students',
     name: 'Students',
     component: () => import('@/views/StudentsView.vue')
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: () => import('@/views/StatisticsView.vue')
   }
 ]
 

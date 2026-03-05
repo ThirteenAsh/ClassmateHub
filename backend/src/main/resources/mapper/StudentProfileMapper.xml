@@ -76,4 +76,28 @@
         SELECT COUNT(*)
         FROM student_profile
     </select>
+
+    <!-- 统计每个班级的同学数量 -->
+    <select id="countStudentsByClass" resultType="com.thirteenash.dto.ClassStudentCountDTO">
+        SELECT c.id as clazzId, c.name as clazzName, COUNT(sp.id) as studentCount
+        FROM clazz c
+        LEFT JOIN student_profile sp ON c.id = sp.clazz_id
+        GROUP BY c.id, c.name
+        ORDER BY c.id ASC
+    </select>
+
+    <!-- 统计各性别的同学数量 -->
+    <select id="countStudentsByGender" resultType="com.thirteenash.dto.GenderCountDTO">
+        SELECT gender, COUNT(*) as count
+        FROM student_profile
+        GROUP BY gender
+        ORDER BY gender ASC
+    </select>
+
+    <!-- 统计指定班级的同学数量 -->
+    <select id="countByClazzId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM student_profile
+        WHERE clazz_id = #{clazzId}
+    </select>
 </mapper>

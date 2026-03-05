@@ -227,6 +227,8 @@
         </div>
       </template>
     </el-dialog>
+
+    <BottomNav :activeTab="activeTab" @update:activeTab="updateActiveTab" />
   </div>
 </template>
 
@@ -236,6 +238,8 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { studentApi, classApi } from '@/api'
+// @ts-ignore
+import BottomNav from '@/components/BottomNav.vue';
 
 const router = useRouter()
 
@@ -279,6 +283,7 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const showCreateStudentDialog = ref(false)
+const activeTab = ref('')
 
 const currentStudent = reactive<StudentProfile>({
   basic: {},
@@ -539,9 +544,14 @@ const goBack = () => {
   router.push('/')
 }
 
+const updateActiveTab = (tab: string) => {
+  activeTab.value = tab;
+};
+
 onMounted(() => {
-  loadClassList()
-  loadStudentList()
+  activeTab.value = 'students'; // 确保初始值正确设置为当前视图的 tab
+  loadClassList();
+  loadStudentList();
 })
 </script>
 

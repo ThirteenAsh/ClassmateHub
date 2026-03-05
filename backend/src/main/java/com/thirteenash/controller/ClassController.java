@@ -17,12 +17,14 @@ public class ClassController {
     @Autowired
     private IClassService classService;
 
+    //创建班级
     @PostMapping
     public Result<ClassInfoVO> createClass(@RequestBody CreateClassRequestDTO requestDTO) {
         ClassInfoVO classInfoVO = classService.createClass(requestDTO);
         return Result.success(classInfoVO);
     }
 
+    //获取班级列表
     @GetMapping
     public Result<PageResponse<ClassInfoVO>> getClassList(@RequestParam(defaultValue = "0") Integer page, 
                                                           @RequestParam(defaultValue = "10") Integer size) {
@@ -33,18 +35,21 @@ public class ClassController {
         return Result.success(pageResponse);
     }
 
+    //获取班级详情
     @GetMapping("/{classId}")
     public Result<ClassInfoVO> getClassById(@PathVariable Long classId) {
         ClassInfoVO classInfoVO = classService.getClassById(classId);
         return Result.success(classInfoVO);
     }
 
+    //更新班级信息
     @PutMapping("/{classId}")
     public Result<Boolean> updateClass(@PathVariable Long classId, @RequestBody UpdateClassRequestDTO requestDTO) {
         Boolean success = classService.updateClass(classId, requestDTO);
         return Result.success(success);
     }
 
+    //删除班级
     @DeleteMapping("/{classId}")
     public Result<Boolean> deleteClass(@PathVariable Long classId) {
         Boolean success = classService.deleteClass(classId);

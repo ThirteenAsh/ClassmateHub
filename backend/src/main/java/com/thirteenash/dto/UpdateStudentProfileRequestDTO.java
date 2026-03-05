@@ -1,10 +1,14 @@
 package com.thirteenash.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateStudentProfileRequestDTO {
     private BasicInfoDTO basic;
 
@@ -15,6 +19,8 @@ public class UpdateStudentProfileRequestDTO {
     private String avatar;
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class BasicInfoDTO {
         private String name;
         private String gender;
@@ -23,6 +29,8 @@ public class UpdateStudentProfileRequestDTO {
     }
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ContactInfoDTO {
         private String phone;
         private String email;

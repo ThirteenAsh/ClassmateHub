@@ -5,13 +5,12 @@ import com.thirteenash.dto.CreateStudentProfileRequestDTO;
 import com.thirteenash.dto.PageRequestDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.vo.StudentProfileVO;
-
-import java.util.List;
+import com.thirteenash.vo.StudentStatisticsVO;
 
 public interface IStudentProfileService {
-    StudentProfileVO createStudentProfile(CreateStudentProfileRequestDTO requestDTO);
 
-    List<StudentProfileVO> getStudentList();
+    //懒得写注释
+    StudentProfileVO createStudentProfile(CreateStudentProfileRequestDTO requestDTO);
 
     StudentProfileVO getStudentById(Long id);
 
@@ -20,4 +19,9 @@ public interface IStudentProfileService {
     Boolean deleteStudentProfile(Long id);
 
     PageResponse<StudentProfileVO> getStudentListByPage(PageRequestDTO pageRequestDTO);
+
+    /**
+     * 获取同学统计信息（班级分布、性别比例、总数等）
+     */
+    StudentStatisticsVO getStudentStatistics();
 }
