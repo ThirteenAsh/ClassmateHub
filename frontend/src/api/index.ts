@@ -54,6 +54,10 @@ export const studentApi = {
   
   deleteStudentProfile: (studentId: number): Promise<AxiosResponse<ApiResponse<boolean>>> => {
     return apiClient.delete(`/students/${studentId}`)
+  },
+
+  getStatisticsSummary: (): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.get('/students/statistics/summary')
   }
 }
 
