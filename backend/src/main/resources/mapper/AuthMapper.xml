@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thirteenash.mapper.AuthMapper">
+
+    <!-- 开启二级缓存（可选，根据需求决定是否开启） -->
+    <!-- <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/> -->
+
+    <!-- 定义结果映射 -->
+    <resultMap id="BaseResultMap" type="Users">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="role" property="role" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 定义基础列名，便于重用 -->
+    <sql id="Base_Column_List">id, username, password, role</sql>
+
+    <!-- 直接使用DTO对象的属性，MyBatis会自动识别 -->
+    <select id="selectByUsernameAndPassword" resultMap="BaseResultMap"
+            parameterType="com.thirteenash.dto.UserLoginRequestDTO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE username = #{username}
+        AND password = #{password}
+    </select>
+
+    <!-- 根据用户ID查询角色权限名称 -->
+    <select id="selectRoleByUserId" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT role
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE username = #{username}
+    </select>
+
+    <!-- 插入新用户 -->
+    <insert id="insertUser" parameterType="com.thirteenash.entity.Users" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (
+        username,
+        password,
+        role
+        ) VALUES (
+        #{username},
+        #{password},
+        'user'  <!-- 默认注册为普通用户 -->
+        )
+    </insert>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.thirteenash.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.thirteenash.common.response.PageResponse;
 import com.thirteenash.common.response.Result;
 import com.thirteenash.dto.CreateClassRequestDTO;
@@ -18,6 +19,7 @@ public class ClassController {
     private IClassService classService;
 
     //创建班级
+    @SaCheckRole("admin")
     @PostMapping
     public Result<ClassInfoVO> createClass(@RequestBody CreateClassRequestDTO requestDTO) {
         ClassInfoVO classInfoVO = classService.createClass(requestDTO);
@@ -25,6 +27,7 @@ public class ClassController {
     }
 
     //获取班级列表
+    @SaCheckRole("admin")
     @GetMapping
     public Result<PageResponse<ClassInfoVO>> getClassList(@RequestParam(defaultValue = "0") Integer page, 
                                                           @RequestParam(defaultValue = "10") Integer size) {
@@ -36,6 +39,7 @@ public class ClassController {
     }
 
     //获取班级详情
+    @SaCheckRole("admin")
     @GetMapping("/{classId}")
     public Result<ClassInfoVO> getClassById(@PathVariable Long classId) {
         ClassInfoVO classInfoVO = classService.getClassById(classId);
@@ -43,6 +47,7 @@ public class ClassController {
     }
 
     //更新班级信息
+    @SaCheckRole("admin")
     @PutMapping("/{classId}")
     public Result<Boolean> updateClass(@PathVariable Long classId, @RequestBody UpdateClassRequestDTO requestDTO) {
         Boolean success = classService.updateClass(classId, requestDTO);
@@ -50,6 +55,7 @@ public class ClassController {
     }
 
     //删除班级
+    @SaCheckRole("admin")
     @DeleteMapping("/{classId}")
     public Result<Boolean> deleteClass(@PathVariable Long classId) {
         Boolean success = classService.deleteClass(classId);
