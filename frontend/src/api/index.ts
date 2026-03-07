@@ -52,19 +52,29 @@ export interface ApiResponse<T = any> {
 
 export const classApi = {
   getClassList: (params?: { page: number; size: number }): Promise<AxiosResponse<ApiResponse<PageResponse<any>>>> => {
-    return apiClient.get('/classes', { params })
+    return apiClient.get('/admin/classes', { params })
   },
   
   createClass: (data: { name: string; createTime?: string; description?: string }): Promise<AxiosResponse<ApiResponse<any>>> => {
-    return apiClient.post('/classes', data)
+    return apiClient.post('/admin/classes', data)
   },
   
   updateClass: (classId: number, data: { name: string; createTime?: string; description?: string }): Promise<AxiosResponse<ApiResponse<boolean>>> => {
-    return apiClient.put(`/classes/${classId}`, data)
+    return apiClient.put(`/admin/classes/${classId}`, data)
   },
   
   deleteClass: (classId: number): Promise<AxiosResponse<ApiResponse<boolean>>> => {
-    return apiClient.delete(`/classes/${classId}`)
+    return apiClient.delete(`/admin/classes/${classId}`)
+  }
+}
+
+export const userApi = {
+  getClassListForUser: (params?: { page: number; size: number }): Promise<AxiosResponse<ApiResponse<PageResponse<any>>>> => {
+    return apiClient.get('/classes/list', { params })
+  },
+  
+  getClassDetailForUser: (classId: number): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.get(`/classes/detail/${classId}`)
   }
 }
 
@@ -87,6 +97,26 @@ export const studentApi = {
 
   getStatisticsSummary: (): Promise<AxiosResponse<ApiResponse<any>>> => {
     return apiClient.get('/students/statistics/summary')
+  }
+}
+
+export const squareApi = {
+  getSquareList: (): Promise<AxiosResponse<ApiResponse<any[]>>> => {
+    return apiClient.get('/square')
+  }
+}
+
+export const profileApi = {
+  getProfile: (): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.get('/profile/me')
+  },
+  
+  createProfile: (data: any): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.post('/profile', data)
+  },
+  
+  updateProfile: (data: any): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.put('/profile', data)
   }
 }
 

@@ -6,6 +6,7 @@
 <mapper namespace="com.thirteenash.mapper.StudentProfileMapper">
     <resultMap id="StudentProfileResultMap" type="com.thirteenash.entity.StudentProfile">
         <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
         <result column="clazz_id" property="clazzId"/>
         <result column="name" property="name"/>
         <result column="gender" property="gender"/>
@@ -22,25 +23,26 @@
     </resultMap>
 
     <select id="selectById" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         WHERE id = #{id}
     </select>
 
     <select id="selectAll" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         ORDER BY create_time DESC
     </select>
 
     <insert id="insert" parameterType="com.thirteenash.entity.StudentProfile" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO student_profile (clazz_id, name, gender, birth_date, phone, university, email, wechat, qq, message, avatar, create_time, update_time)
-        VALUES (#{clazzId}, #{name}, #{gender}, #{birthDate}, #{phone}, #{university}, #{email}, #{wechat}, #{qq}, #{message}, #{avatar}, #{createTime}, #{updateTime})
+        INSERT INTO student_profile (user_id, clazz_id, name, gender, birth_date, phone, university, email, wechat, qq, message, avatar, create_time, update_time)
+        VALUES (#{userId}, #{clazzId}, #{name}, #{gender}, #{birthDate}, #{phone}, #{university}, #{email}, #{wechat}, #{qq}, #{message}, #{avatar}, #{createTime}, #{updateTime})
     </insert>
 
     <update id="updateById" parameterType="com.thirteenash.entity.StudentProfile">
         UPDATE student_profile
-        SET clazz_id = #{clazzId},
+        SET user_id = #{userId},
+            clazz_id = #{clazzId},
             name = #{name},
             gender = #{gender},
             birth_date = #{birthDate},
@@ -61,7 +63,7 @@
     </delete>
 
     <select id="selectByPage" resultMap="StudentProfileResultMap">
-        SELECT id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
         FROM student_profile
         ORDER BY id ASC
         LIMIT #{offset}, #{pageSize}
@@ -99,5 +101,21 @@
         SELECT COUNT(*)
         FROM student_profile
         WHERE clazz_id = #{clazzId}
+    </select>
+
+    <!-- 根据班级ID查询同学列表 -->
+    <select id="selectByClazzId" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        FROM student_profile
+        WHERE clazz_id = #{clazzId}
+        ORDER BY id ASC
+    </select>
+
+    <!-- 根据用户ID查询个人信息 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="StudentProfileResultMap">
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        FROM student_profile
+        WHERE user_id = #{userId}
+        LIMIT 1
     </select>
 </mapper>

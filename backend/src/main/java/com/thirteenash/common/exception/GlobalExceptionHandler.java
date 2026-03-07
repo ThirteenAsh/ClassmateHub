@@ -5,6 +5,7 @@ import cn.dev33.satoken.exception.NotRoleException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import com.thirteenash.common.response.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,6 +21,14 @@ public class GlobalExceptionHandler {
     public Result<String> handleBusinessException(BusinessException e) {
         log.error("业务异常：", e);
         return Result.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result<String> handleValidationException(MethodArgumentNotValidException e) {
+        // 获取第一个验证错误信息
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        log.warn("参数验证失败：{}", errorMessage);
+        return Result.error(400, errorMessage);
     }
 
     @ExceptionHandler(Exception.class)

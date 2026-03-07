@@ -34,6 +34,11 @@ public class Users implements Serializable {
     private Role role;
 
     /**
+     * 班级ID
+     */
+    private Integer classId;
+
+    /**
      * 角色枚举
      */
     public enum Role {
@@ -85,6 +90,14 @@ public class Users implements Serializable {
         this.role = role;
     }
 
+    public Integer getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
+
     // toString方法
     @Override
     public String toString() {
@@ -93,6 +106,7 @@ public class Users implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", classId=" + classId +
                 '}';
     }
 

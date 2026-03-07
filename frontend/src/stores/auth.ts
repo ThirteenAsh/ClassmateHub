@@ -7,15 +7,18 @@ export const useAuthStore = defineStore('auth', () => {
   const username = ref<string>('')
   const token = ref<string>('')
   const isAuthenticated = ref<boolean>(false)
+  const role = ref<string>('')
 
   // 初始化认证状态
   const initAuthState = () => {
     const storedUsername = localStorage.getItem('username')
     const storedToken = localStorage.getItem('token')
+    const storedRole = localStorage.getItem('role')
 
     if (storedUsername && storedToken) {
       username.value = storedUsername
       token.value = storedToken
+      role.value = storedRole || ''
       isAuthenticated.value = true
     }
   }
@@ -30,6 +33,13 @@ export const useAuthStore = defineStore('auth', () => {
       if (data.token) {
         token.value = data.token
         localStorage.setItem('token', data.token)
+      }
+      if (data.role) {
+        role.value = data.role
+        localStorage.setItem('role', data.role)
+      } else {
+        role.value = ''
+        localStorage.removeItem('role')
       }
       localStorage.setItem('username', credentials.username)
       isAuthenticated.value = true
@@ -51,9 +61,11 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       username.value = ''
       token.value = ''
+      role.value = ''
       isAuthenticated.value = false
       localStorage.removeItem('username')
       localStorage.removeItem('token')
+      localStorage.removeItem('role')
     }
   }
 
@@ -61,14 +73,17 @@ export const useAuthStore = defineStore('auth', () => {
   const clearAuth = () => {
     username.value = ''
     token.value = ''
+    role.value = ''
     isAuthenticated.value = false
     localStorage.removeItem('username')
     localStorage.removeItem('token')
+    localStorage.removeItem('role')
   }
 
   return {
     username,
     token,
+    role,
     isAuthenticated,
     initAuthState,
     login,

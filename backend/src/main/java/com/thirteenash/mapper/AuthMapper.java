@@ -44,4 +44,13 @@ public interface AuthMapper {
      */
     int insertUser(Users user);
 
+    /**
+     * 根据用户ID查询用户
+     */
+    Users selectById(@Param("id") Integer id);
+
+    /**
+     * 更新用户密码
+     */
+    int updatePassword(@Param("id") Integer id, @Param("password") String password);
 }
