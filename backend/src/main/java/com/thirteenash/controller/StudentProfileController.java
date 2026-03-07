@@ -1,5 +1,7 @@
 package com.thirteenash.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.thirteenash.common.response.PageResponse;
 import com.thirteenash.common.response.Result;
 import com.thirteenash.dto.CreateStudentProfileRequestDTO;
@@ -24,6 +26,7 @@ public class StudentProfileController {
     /**
      * 创建同学信息
      */
+    @SaCheckRole("admin")
     @PostMapping
     public Result<StudentProfileVO> createStudentProfile(@RequestBody CreateStudentProfileRequestDTO requestDTO) {
         StudentProfileVO studentProfileVO = studentProfileService.createStudentProfile(requestDTO);
@@ -33,6 +36,7 @@ public class StudentProfileController {
     /**
      * 获取同学列表
      */
+    @SaCheckRole("admin")
     @GetMapping
     public Result<PageResponse<StudentProfileVO>> getStudentList(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
         PageRequestDTO pageRequestDTO = new PageRequestDTO();
@@ -45,6 +49,7 @@ public class StudentProfileController {
     /**
      * 获取同学详情
      */
+    @SaCheckRole("admin")
     @GetMapping("/{id}")
     public Result<StudentProfileVO> getStudentById(@PathVariable Long id) {
         StudentProfileVO studentProfileVO = studentProfileService.getStudentById(id);
@@ -54,6 +59,7 @@ public class StudentProfileController {
     /**
      * 更新同学信息
      */
+    @SaCheckRole("admin")
     @PutMapping("/{id}")
     public Result<Boolean> updateStudentProfile(@PathVariable Long id, @RequestBody UpdateStudentProfileRequestDTO requestDTO) {
         Boolean success = studentProfileService.updateStudentProfile(id, requestDTO);
@@ -63,6 +69,7 @@ public class StudentProfileController {
     /**
      * 删除同学信息
      */
+    @SaCheckRole("admin")
     @DeleteMapping("/{id}")
     public Result<Boolean> deleteStudentProfile(@PathVariable Long id) {
         Boolean success = studentProfileService.deleteStudentProfile(id);
@@ -73,6 +80,7 @@ public class StudentProfileController {
      * 获取同学统计信息
      * 包括：同学总数、各班级同学数量、性别比例
      */
+    @SaCheckRole(value = {"admin", "user"}, mode = SaMode.OR)
     @GetMapping("/statistics/summary")
     public Result<StudentStatisticsVO> getStudentStatistics() {
         StudentStatisticsVO statistics = studentProfileService.getStudentStatistics();

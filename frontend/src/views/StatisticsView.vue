@@ -36,8 +36,12 @@
           <el-icon :size="40"><DataAnalysis /></el-icon>
         </div>
         <div class="stat-content">
-          <div class="stat-value">{{ displayGenders }}</div>
-          <div class="stat-label">性别统计</div>
+          <div class="stat-value gender-ratio">
+            <span class="male-ratio">{{ displayGenders.male }}</span>
+            <span class="ratio-separator">:</span>
+            <span class="female-ratio">{{ displayGenders.female }}</span>
+          </div>
+          <div class="stat-label">性别比例</div>
         </div>
       </div>
     </div>
@@ -87,10 +91,9 @@ import BottomNav from '../components/BottomNav.vue'
 const activeTab = ref('statistics')
 const totalStudents = ref(0)
 const totalClasses = ref(0)
-const totalGenders = ref(0)
 const displayStudents = ref(0)
 const displayClasses = ref(0)
-const displayGenders = ref(0)
+const displayGenders = ref({ male: 0, female: 0 })
 const classStatistics = ref<Array<{ classId: number; className: string; studentCount: number }>>([])
 const genderRatios = ref<Array<{ gender: string; count: number; ratio: number }>>([])
 const classChartRef = ref<HTMLElement | null>(null)
@@ -128,7 +131,6 @@ const animateNumber = (endValue: number, displayRef: any, duration: number = 100
 const animateAllNumbers = () => {
   animateNumber(totalClasses.value, displayClasses, 800)
   animateNumber(totalStudents.value, displayStudents, 800)
-  animateNumber(totalGenders.value, displayGenders, 800)
 }
 
 
@@ -240,9 +242,25 @@ const loadStatistics = async () => {
       const data = response.data.data
       totalStudents.value = data.totalCount
       totalClasses.value = data.classStatistics.length
-      totalGenders.value = data.genderRatios.length
       classStatistics.value = data.classStatistics
       genderRatios.value = data.genderRatios
+      
+      // 计算男女比例
+      if (data.genderRatios && data.genderRatios.length > 0) {
+        const counts: { [key: string]: number } = {}
+        data.genderRatios.forEach((g: { gender: string; count: number }) => {
+          counts[g.gender] = g.count
+        })
+        const maleCount = counts['男'] || 0
+        const femaleCount = counts['女'] || 0
+        const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b)
+        const divisor = gcd(maleCount, femaleCount) || 1
+        displayGenders.value = {
+          male: Math.round(maleCount / divisor),
+          female: Math.round(femaleCount / divisor)
+        }
+      }
+      
       // 触发数字动画
       animateAllNumbers()
     } else {
@@ -433,6 +451,31 @@ onMounted(() => {
   line-height: 1;
   margin-bottom: 0.5rem;
   animation: countUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gender-ratio {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: none;
+}
+
+.male-ratio {
+  color: #72efdd;
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.female-ratio {
+  color: #ff8fab;
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.ratio-separator {
+  color: #9fa0b3;
+  font-size: 2rem;
+  font-weight: 600;
 }
 
 .stat-label {

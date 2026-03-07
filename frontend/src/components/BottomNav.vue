@@ -47,7 +47,6 @@ const clickedTab = ref<string | null>(null)
 
 const navItems: NavItem[] = [
   { id: 'square', label: '广场', icon: ChatDotRound, route: '/' },
-  { id: 'profile', label: '个人资料', icon: User },
   { id: 'classes', label: '班级管理', icon: School, route: '/classes' },
   { id: 'students', label: '学生信息', icon: User, route: '/students' },
   { id: 'statistics', label: '统计信息', icon: DataAnalysis, route: '/statistics' }
