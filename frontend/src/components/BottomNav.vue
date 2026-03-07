@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ChatDotRound, User, School, DataAnalysis } from '@element-plus/icons-vue'
+import { ChatDotRound, User, School, DataAnalysis, UserFilled } from '@element-plus/icons-vue'
 
 defineOptions({
   name: 'BottomNav'
@@ -47,6 +47,7 @@ const clickedTab = ref<string | null>(null)
 
 const navItems: NavItem[] = [
   { id: 'square', label: '广场', icon: ChatDotRound, route: '/' },
+  { id: 'profile', label: '个人信息', icon: UserFilled, route: '/profile' },
   { id: 'classes', label: '班级管理', icon: School, route: '/classes' },
   { id: 'students', label: '学生信息', icon: User, route: '/students' },
   { id: 'statistics', label: '统计信息', icon: DataAnalysis, route: '/statistics' }

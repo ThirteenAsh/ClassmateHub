@@ -5,6 +5,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.thirteenash.common.response.Result;
+import com.thirteenash.dto.ChangePasswordRequestDTO;
 import com.thirteenash.dto.UserLoginRequestDTO;
 import com.thirteenash.dto.UserRegisterDTO;
 import com.thirteenash.vo.UserLoginInfo;
@@ -91,6 +92,18 @@ public class AuthController {
         log.info("用户登出成功，id：{}", id);
 
         return Result.success("退出成功");
+    }
+
+    @PostMapping("/change-password")
+    @SaCheckLogin
+    public Result changePassword(@RequestBody ChangePasswordRequestDTO requestDTO) {
+        log.info("修改密码请求，userId：{}", StpUtil.getLoginId());
+
+        Long userId = StpUtil.getLoginIdAsLong();
+        authService.changePassword(userId, requestDTO);
+
+        log.info("修改密码成功，userId：{}", userId);
+        return Result.success("修改密码成功");
     }
 
 }

@@ -18,6 +18,7 @@
             <span class="page-title">同学信息管理</span>
           </div>
           <el-button 
+            v-if="isAdmin"
             type="primary" 
             @click="handleCreateStudent"
             class="cute-btn-primary"
@@ -27,77 +28,83 @@
         </div>
       </template>
       
-      <el-table 
-        :data="studentList" 
-        style="width: 100%" 
-        v-loading="loading"
-        class="cute-table"
-      >
-        <el-table-column prop="id" label="ID" width="80" align="center" />
-        <el-table-column label="姓名" width="120" align="center">
-          <template #default="scope">
-            <span class="highlight-text">{{ scope.row.basic.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="性别" width="80" align="center">
-          <template #default="scope">
-            <el-tag :type="scope.row.basic.gender === '男' ? 'primary' : 'danger'" effect="light" round>
-              {{ scope.row.basic.gender }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="班级" width="150" align="center">
-          <template #default="scope">
-            {{ getClassName(scope.row.clazzId) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="出生日期" width="150" align="center">
-          <template #default="scope">
-            {{ formatDate(scope.row.basic.birthDate) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="大学" min-width="150" align="center">
-          <template #default="scope">
-            {{ scope.row.basic.university || '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="contact.phone" label="电话" min-width="150" align="center" />
-        <el-table-column label="操作" width="180" fixed="right" align="center">
-          <template #default="scope">
-            <el-button 
-              size="small" 
-              type="primary" 
-              class="cute-btn-small"
-              @click="editStudent(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button 
-              size="small" 
-              type="danger" 
-              class="cute-btn-small cute-btn-danger"
-              @click="deleteStudent(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      
-      <div class="pagination">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+      <div v-if="isAdmin">
+        <el-table 
+          :data="studentList" 
+          style="width: 100%" 
+          v-loading="loading"
+          class="cute-table"
+        >
+          <el-table-column prop="id" label="ID" width="80" align="center" />
+          <el-table-column label="姓名" width="120" align="center">
+            <template #default="scope">
+              <span class="highlight-text">{{ scope.row.basic.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="性别" width="80" align="center">
+            <template #default="scope">
+              <el-tag :type="scope.row.basic.gender === '男' ? 'primary' : 'danger'" effect="light" round>
+                {{ scope.row.basic.gender }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="班级" width="150" align="center">
+            <template #default="scope">
+              {{ getClassName(scope.row.clazzId) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="出生日期" width="150" align="center">
+            <template #default="scope">
+              {{ formatDate(scope.row.basic.birthDate) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="大学" min-width="150" align="center">
+            <template #default="scope">
+              {{ scope.row.basic.university || '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="contact.phone" label="电话" min-width="150" align="center" />
+          <el-table-column label="操作" width="180" fixed="right" align="center">
+            <template #default="scope">
+              <el-button 
+                size="small" 
+                type="primary" 
+                class="cute-btn-small"
+                @click="editStudent(scope.row)"
+              >
+                编辑
+              </el-button>
+              <el-button 
+                size="small" 
+                type="danger" 
+                class="cute-btn-small cute-btn-danger"
+                @click="deleteStudent(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        
+        <div class="pagination">
+          <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[10, 20, 50, 100]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </div>
+      <div v-else class="no-permission">
+        <el-empty description="当前账号无权限访问同学信息，请使用管理员账号登录。" />
       </div>
     </el-card>
     
     <el-dialog 
+      v-if="isAdmin"
       v-model="showCreateStudentDialog" 
       :title="currentStudent.id ? '🐬 编辑同学' : '🐬 新增同学'" 
       width="800px"
@@ -233,15 +240,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { studentApi, classApi } from '@/api'
 // @ts-ignore
 import BottomNav from '@/components/BottomNav.vue';
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
+const isAdmin = computed(() => authStore.role === 'admin')
 
 interface BasicInfo {
   name?: string
@@ -550,6 +560,10 @@ const updateActiveTab = (tab: string) => {
 
 onMounted(() => {
   activeTab.value = 'students'; // 确保初始值正确设置为当前视图的 tab
+  if (!isAdmin.value) {
+    ElMessage.error('当前账号无权限访问同学信息')
+    return
+  }
   loadClassList();
   loadStudentList();
 })

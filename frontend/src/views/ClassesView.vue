@@ -18,6 +18,7 @@
             <span class="page-title">班级管理</span>
           </div>
           <el-button 
+            v-if="isAdmin"
             type="primary" 
             @click="handleCreateClass"
             class="cute-btn-primary"
@@ -27,60 +28,66 @@
         </div>
       </template>
       
-      <el-table 
-        :data="classList" 
-        style="width: 100%" 
-        v-loading="loading"
-        class="cute-table"
-      >
-        <el-table-column prop="id" label="ID" width="80" align="center" />
-        <el-table-column prop="name" label="班级名称" align="center">
-          <template #default="scope">
-            <span class="highlight-text">{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="description" label="描述" show-overflow-tooltip />
-        <el-table-column prop="createTime" label="创建时间" align="center">
-          <template #default="scope">
-            {{ formatDate(scope.row.createTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template #default="scope">
-            <el-button 
-              size="small" 
-              type="default"
-              class="cute-btn-small cute-btn-edit"
-              @click="editClass(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button 
-              size="small" 
-              type="danger" 
-              class="cute-btn-small cute-btn-danger"
-              @click="deleteClass(scope.row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      
-      <div class="pagination">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+      <div v-if="isAdmin">
+        <el-table 
+          :data="classList" 
+          style="width: 100%" 
+          v-loading="loading"
+          class="cute-table"
+        >
+          <el-table-column prop="id" label="ID" width="80" align="center" />
+          <el-table-column prop="name" label="班级名称" align="center">
+            <template #default="scope">
+              <span class="highlight-text">{{ scope.row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="description" label="描述" show-overflow-tooltip />
+          <el-table-column prop="createTime" label="创建时间" align="center">
+            <template #default="scope">
+              {{ formatDate(scope.row.createTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="180" align="center">
+            <template #default="scope">
+              <el-button 
+                size="small" 
+                type="default"
+                class="cute-btn-small cute-btn-edit"
+                @click="editClass(scope.row)"
+              >
+                编辑
+              </el-button>
+              <el-button 
+                size="small" 
+                type="danger" 
+                class="cute-btn-small cute-btn-danger"
+                @click="deleteClass(scope.row.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        
+        <div class="pagination">
+          <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[10, 20, 50, 100]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </div>
+      <div v-else class="no-permission">
+        <el-empty description="当前账号无权限访问班级管理，请使用管理员账号登录。" />
       </div>
     </el-card>
     
     <el-dialog 
+      v-if="isAdmin"
       v-model="showCreateClassDialog" 
       :title="currentClass.id ? '✨ 编辑班级' : '✨ 新增班级'" 
       width="500px"
@@ -132,15 +139,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { classApi } from '@/api'
 // @ts-ignore
 import BottomNav from '@/components/BottomNav.vue';
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
+const isAdmin = computed(() => authStore.role === 'admin')
 
 interface ClassItem {
   id?: number
@@ -308,6 +318,10 @@ const updateActiveTab = (tab: string) => {
 
 onMounted(() => {
   activeTab.value = 'classes'; // 确保初始值正确设置为当前视图的 tab
+  if (!isAdmin.value) {
+    ElMessage.error('当前账号无权限访问班级管理')
+    return
+  }
   loadClassList();
 });
 </script>

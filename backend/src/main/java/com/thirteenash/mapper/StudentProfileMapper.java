@@ -42,4 +42,14 @@ public interface StudentProfileMapper {
      * 统计指定班级的同学数量
      */
     Long countByClazzId(@Param("clazzId") Long clazzId);
+
+    /**
+     * 根据班级ID查询同学列表
+     */
+    List<StudentProfile> selectByClazzId(@Param("clazzId") Long clazzId);
+
+    /**
+     * 根据用户ID查询个人信息
+     */
+    StudentProfile selectByUserId(@Param("userId") Long userId);
 }

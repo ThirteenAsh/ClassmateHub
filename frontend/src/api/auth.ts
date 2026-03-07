@@ -9,6 +9,7 @@ export interface AuthCredentials {
 export interface AuthResponse {
   token?: string
   username?: string
+  role?: string
   message?: string
 }
 
@@ -23,5 +24,9 @@ export const authApi = {
 
   logout: (): Promise<AxiosResponse<ApiResponse<null>>> => {
     return apiClient.post('/auth/logout', {})
+  },
+
+  changePassword: (data: { oldPassword: string; newPassword: string }): Promise<AxiosResponse<ApiResponse<null>>> => {
+    return apiClient.post('/auth/change-password', data)
   }
 }
