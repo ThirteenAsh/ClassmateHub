@@ -12,7 +12,7 @@
             <span class="meta-value">{{ classmates.length }}</span>
           </div>
         </div>
-        <p class="page-subtitle">探索同班同学，分享生活，建立联系，发现更多精彩内容，下滑查看更多</p>
+        <p class="page-subtitle">电子同学录，寻找同班同学，建立联系，发现更多好友，下滑查看更多</p>
       </div>
     </div>
 
@@ -29,19 +29,27 @@
             </el-button>
           </div>
           <p v-show="noticeExpanded" class="notice-text">
-            请勿担心数据泄露风险，本网站服务器及域名所有人均为王博文本人，网络接入服务商为阿里云计算有限公司。受限于技术水平，网站可能会有各种奇怪的 bug，或者体验不良好的地方，请谅解
+            请勿担心数据泄露风险，本网站非公共平台，服务器及域名均本人所有，网络接入服务商为阿里云计算有限公司。
+            <br />
+            受限于技术水平，网站可能会有各种奇怪的 bug，或者体验不良好的地方，请谅解
             <span class="light-text">（我是真没招了，有的问题就是修不好……）</span>
             <br />
             欢迎大家访问我网站的其他内容(≧ｗ≦)：
             <a href="https://thirteenash.bytecraft.xin/" target="_blank" rel="noopener noreferrer">个人主页</a>、
-            <a href="https://game.bytecraft.xin/" target="_blank" rel="noopener noreferrer">小游戏</a>、
-            <a href="https://docs.bytecraft.xin/" target="_blank" rel="noopener noreferrer">文档帮助</a>、
-            该项目的GitHub仓库：
-            <a href="https://github.com/ThirteenAsh/ClassmateHub" target="_blank" rel="noopener noreferrer">项目仓库</a>，欢迎交流学习
+            <a href="https://game.bytecraft.xin/" target="_blank" rel="noopener noreferrer">社区</a>、
+            <a href="https://docs.bytecraft.xin/" target="_blank" rel="noopener noreferrer">文档帮助</a>
+            <br />该项目的源代码仓库：
+            <a href="https://github.com/ThirteenAsh/ClassmateHub" target="_blank" rel="noopener noreferrer">跳转GitHub</a>，欢迎交流学习
+            <br />
+            <strong style="color:#ff5d8f;">您仅可在本页面查看同班同学的部分公开信息，其他人无法访问或修改任何个人数据。请放心使用！</strong>
           </p>
         </div>
         <div class="notification-right">
           <div class="legal-content">
+            <div class="notice-title">
+              <el-icon class="notice-icon"><InfoFilled /></el-icon>
+              <span>备案信息</span>
+            </div>
             <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
               陕ICP备2025084108号-1
             </a>
@@ -93,7 +101,7 @@
               </el-avatar>
             </div>
             <div class="card-info">
-              <h3 class="classmate-name">{{ classmate.name }}</h3>
+              <h3 class="classmate-name">{{ classmate.username || classmate.name }}</h3>
               <div class="card-tags">
                 <span class="tag" :class="classmate.gender === '男' ? 'tag-boy' : 'tag-girl'">
                   {{ classmate.gender === '男' ? '男生' : '女生' }}
@@ -104,6 +112,14 @@
           </div>
           
           <div class="card-details">
+            <div class="detail-item">
+              <el-icon class="detail-icon"><User /></el-icon>
+              <span class="detail-text">
+                <span class="detail-label">姓名</span>
+                <span class="detail-value">{{ classmate.name || '-' }}</span>
+              </span>
+            </div>
+
             <div class="detail-item">
               <el-icon class="detail-icon"><Calendar /></el-icon>
               <span class="detail-text">
@@ -117,6 +133,14 @@
               <span class="detail-text">
                 <span class="detail-label">电话</span>
                 <span class="detail-value">{{ classmate.phone || '-' }}</span>
+              </span>
+            </div>
+
+            <div class="detail-item">
+              <el-icon class="detail-icon"><ChatDotRound /></el-icon>
+              <span class="detail-text">
+                <span class="detail-label">QQ</span>
+                <span class="detail-value">{{ classmate.qq || '-' }}</span>
               </span>
             </div>
             
@@ -149,7 +173,8 @@ import {
   School,
   InfoFilled,
   WarningFilled,
-  Loading 
+  Loading,
+  User
 } from '@element-plus/icons-vue'
 import { squareApi } from '../api'
 // @ts-ignore
@@ -158,10 +183,12 @@ import type { ApiResponse } from '../api'
 import BottomNav from '../components/BottomNav.vue'
 
 interface Classmate {
+  username?: string
   name: string
   gender: string
   birthDate: string
   phone: string
+  qq?: string
   university: string
 }
 

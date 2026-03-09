@@ -71,4 +71,17 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 更新用户角色 -->
+    <update id="updateRole" parameterType="map">
+        UPDATE users
+        SET role = #{role}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        DELETE FROM users
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

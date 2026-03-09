@@ -8,6 +8,7 @@ import com.thirteenash.dto.GenderCountDTO;
 import com.thirteenash.dto.PageRequestDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.entity.StudentProfile;
+import com.thirteenash.mapper.AuthMapper;
 import com.thirteenash.mapper.StudentProfileMapper;
 import com.thirteenash.service.IStudentProfileService;
 import com.thirteenash.vo.ClassStatisticsVO;
@@ -29,6 +30,9 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
 
     @Autowired
     private StudentProfileMapper studentProfileMapper;
+
+    @Autowired
+    private AuthMapper authMapper;
 
     // 创建同学信息
     @Override
@@ -133,6 +137,13 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
             throw new BusinessException("同学信息不存在");
         }
 
+        // 删除对应的用户数据
+        Long userId = existingProfile.getUserId();
+        if (userId != null) {
+            authMapper.deleteUser(userId.intValue());
+        }
+
+        // 删除同学信息
         int result = studentProfileMapper.deleteById(id);
         return result > 0;
     }

@@ -510,7 +510,8 @@ const profileRules = {
     { required: true, message: '请输入大学名称', trigger: 'blur' }
   ],
   'contact.phone': [
-    { required: true, message: '请输入电话', trigger: 'blur' }
+    { required: true, message: '请输入电话', trigger: 'blur' },
+    { min: 11, max: 11, message: '手机号必须为 11 位', trigger: 'blur' }
   ],
   'contact.qq': [
     { required: true, message: '请输入QQ', trigger: 'blur' }
