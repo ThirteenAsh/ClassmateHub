@@ -82,7 +82,7 @@
         </div>
       </div>
       <div v-else class="no-permission">
-        <el-empty description="当前账号无权限访问班级管理，请使用管理员账号登录。" />
+        <el-empty description="当前账号无权限访问班级管理，请使用管理员账号登录，或寻找管理员进行提权。" />
       </div>
     </el-card>
     

@@ -53,4 +53,14 @@ public interface AuthMapper {
      * 更新用户密码
      */
     int updatePassword(@Param("id") Integer id, @Param("password") String password);
+
+    /**
+     * 更新用户角色
+     */
+    int updateRole(@Param("id") Integer id, @Param("role") String role);
+
+    /**
+     * 删除用户
+     */
+    int deleteUser(@Param("id") Integer id);
 }

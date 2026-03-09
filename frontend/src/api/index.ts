@@ -100,6 +100,16 @@ export const studentApi = {
   }
 }
 
+export const adminApi = {
+  changePassword: (data: { studentId: number; newPassword: string }): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.post('/admin/change-password', data)
+  },
+
+  setAdmin: (data: { studentId: number }): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return apiClient.post('/admin/set-admin', data)
+  }
+}
+
 export const squareApi = {
   getSquareList: (): Promise<AxiosResponse<ApiResponse<any[]>>> => {
     return apiClient.get('/square')

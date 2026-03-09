@@ -11,6 +11,9 @@ import com.thirteenash.dto.UserRegisterDTO;
 import com.thirteenash.vo.UserLoginInfo;
 import com.thirteenash.service.AuthService;
 import com.thirteenash.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "认证管理", description = "用户登录、注册、登出、密码修改等认证相关接口")
 public class AuthController {
 
     @Autowired
@@ -34,6 +38,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "用户登录", description = "用户通过用户名和密码进行登录，登录成功后返回用户信息和 Token")
     @PostMapping("/login")
     @SaIgnore
     public Result login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
@@ -65,6 +70,7 @@ public class AuthController {
      * @param registerDTO 注册信息
      * @return 注册结果
      */
+    @Operation(summary = "用户注册", description = "新用户注册账号，需要提供用户名、密码和确认密码")
     @PostMapping("/register")
     @SaIgnore
     public Result<Map<String, Object>> register(@Valid @RequestBody UserRegisterDTO registerDTO) {
@@ -79,6 +85,7 @@ public class AuthController {
         return Result.success("注册成功", data);
     }
 
+    @Operation(summary = "用户登出", description = "已登录用户退出系统，清除 Token")
     @PostMapping("/logout")
     @SaCheckLogin
     public Result logout(HttpServletRequest request) {
@@ -94,6 +101,7 @@ public class AuthController {
         return Result.success("退出成功");
     }
 
+    @Operation(summary = "修改密码", description = "已登录用户修改自己的登录密码")
     @PostMapping("/change-password")
     @SaCheckLogin
     public Result changePassword(@RequestBody ChangePasswordRequestDTO requestDTO) {

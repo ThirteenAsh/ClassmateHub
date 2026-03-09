@@ -5,8 +5,11 @@
 
     <div class="header-section">
       <div class="header-content">
-        <h1 class="page-title">数据统计</h1>
-        <p class="page-subtitle">查看数据统计</p>
+        <h1 class="page-title">
+          <span class="title-gradient">数据</span>
+          <span class="title-gradient delay-1">统计</span>
+        </h1>
+        <p class="page-subtitle">洞察校园 · 一目了然</p>
       </div>
     </div>
 

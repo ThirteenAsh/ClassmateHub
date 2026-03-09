@@ -64,24 +64,46 @@
             </template>
           </el-table-column>
           <el-table-column prop="contact.phone" label="电话" min-width="150" align="center" />
-          <el-table-column label="操作" width="180" fixed="right" align="center">
+          <el-table-column label="操作" width="260" fixed="right" align="center">
             <template #default="scope">
-              <el-button 
-                size="small" 
-                type="primary" 
-                class="cute-btn-small"
-                @click="editStudent(scope.row)"
-              >
-                编辑
-              </el-button>
-              <el-button 
-                size="small" 
-                type="danger" 
-                class="cute-btn-small cute-btn-danger"
-                @click="deleteStudent(scope.row.id)"
-              >
-                删除
-              </el-button>
+              <div class="operation-buttons">
+                <div class="button-row">
+                  <el-button 
+                    size="small" 
+                    type="primary" 
+                    class="cute-btn-small"
+                    @click="editStudent(scope.row)"
+                  >
+                    编辑
+                  </el-button>
+                  <el-button 
+                    size="small" 
+                    type="danger" 
+                    class="cute-btn-small cute-btn-danger"
+                    @click="deleteStudent(scope.row.id)"
+                  >
+                    删除
+                  </el-button>
+                </div>
+                <div class="button-row">
+                  <el-button 
+                    size="small" 
+                    type="warning" 
+                    class="cute-btn-small"
+                    @click="handleChangePassword(scope.row.id)"
+                  >
+                    改密
+                  </el-button>
+                  <el-button 
+                    size="small" 
+                    type="success" 
+                    class="cute-btn-small"
+                    @click="handleSetAdmin(scope.row.id)"
+                  >
+                    提权
+                  </el-button>
+                </div>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -99,7 +121,7 @@
         </div>
       </div>
       <div v-else class="no-permission">
-        <el-empty description="当前账号无权限访问同学信息，请使用管理员账号登录。" />
+        <el-empty description="当前账号无权限访问同学信息，请使用管理员账号登录，或寻找管理员进行提权。" />
       </div>
     </el-card>
     
@@ -218,7 +240,7 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="头像URL" prop="avatar">
+            <el-form-item label="头像URL(这是一个待开发功能，如果你懂得这里填什么，可以填入你头像的URL地址)" prop="avatar">
               <el-input
                 v-model="currentStudent.avatar"
                 placeholder="请输入头像URL（例如：https://example.com/avatar.jpg）"
@@ -244,7 +266,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
-import { studentApi, classApi } from '@/api'
+import { studentApi, classApi, adminApi } from '@/api'
 // @ts-ignore
 import BottomNav from '@/components/BottomNav.vue';
 import { useAuthStore } from '@/stores/auth'
@@ -315,7 +337,8 @@ const studentRules = {
     { required: true, message: '请输入大学名称', trigger: 'blur' }
   ],
   'contact.phone': [
-    { required: true, message: '请输入电话', trigger: 'blur' }
+    { required: true, message: '请输入电话', trigger: 'blur' },
+    { min: 11, max: 11, message: '电话长度必须为 11 位', trigger: 'blur' }
   ],
   'contact.qq': [
     { required: true, message: '请输入QQ', trigger: 'blur' }
@@ -431,6 +454,87 @@ const deleteStudent = async (studentId: number) => {
   }
 }
 
+const handleChangePassword = async (studentId?: number) => {
+  if (!studentId) {
+    ElMessage.error('学生ID不存在')
+    return
+  }
+
+  try {
+    const result: any = await ElMessageBox.prompt(
+      '请输入新密码',
+      '修改密码',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputType: 'password',
+        inputPlaceholder: '请输入新密码',
+        inputValidator: (val: string) => {
+          if (!val) {
+            return '新密码不能为空'
+          }
+          if (val.length < 6) {
+            return '密码长度不能少于6位'
+          }
+          return true
+        }
+      }
+    )
+
+    const value = result.value as string
+
+    const response = await adminApi.changePassword({
+      studentId,
+      newPassword: value
+    })
+
+    if (response.data.code === 0 || response.data.code === 200) {
+      ElMessage.success(response.data.message || '密码修改成功')
+    } else {
+      ElMessage.error(response.data.message || '密码修改失败')
+    }
+  } catch (error: any) {
+    if (error === 'cancel' || error === 'close') {
+      return
+    }
+    console.error('Change password error:', error)
+    ElMessage.error('密码修改失败')
+  }
+}
+
+const handleSetAdmin = async (studentId?: number) => {
+  if (!studentId) {
+    ElMessage.error('学生ID不存在')
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+      '确定将该同学设置为管理员吗？',
+      '设置管理员',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+
+    const response = await adminApi.setAdmin({ studentId })
+
+    if (response.data.code === 0 || response.data.code === 200) {
+      ElMessage.success(response.data.message || '设置管理员成功')
+    } else {
+      ElMessage.error(response.data.message || '设置管理员失败')
+    }
+  } catch (error: any) {
+    if (error === 'cancel' || error === 'close') {
+      return
+    }
+    console.error('Set admin error:', error)
+    ElMessage.error('设置管理员失败')
+  }
+}
+
 const saveStudent = async () => {
   if (!studentFormRef.value) return
 
@@ -505,6 +609,9 @@ const validateStudentForm = async () => {
   }
   if (!currentStudent.contact?.phone) {
     throw new Error('请输入电话')
+  }
+  if (currentStudent.contact.phone.length !== 11) {
+    throw new Error('电话长度必须为 11 位')
   }
   if (!currentStudent.contact?.qq) {
     throw new Error('请输入QQ')
@@ -687,6 +794,23 @@ onMounted(() => {
 :deep(.cute-form .el-textarea__inner:focus),
 :deep(.cute-form .el-select__wrapper.is-focused) {
   box-shadow: 0 0 0 2px #bde0fe inset !important;
+}
+
+/* 操作按钮两排布局 */
+
+.operation-buttons {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.operation-buttons .button-row {
+  display: flex;
+  justify-content: center;
+}
+
+.operation-buttons .button-row + .button-row {
+  margin-top: 4px;
 }
 
 /* 动画保留在组件内（供 :deep 使用） */

@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
   { id: 'square', label: '广场', icon: ChatDotRound, route: '/' },
   { id: 'profile', label: '个人信息', icon: UserFilled, route: '/profile' },
   { id: 'classes', label: '班级管理', icon: School, route: '/classes' },
-  { id: 'students', label: '学生信息', icon: User, route: '/students' },
+  { id: 'students', label: '同学管理', icon: User, route: '/students' },
   { id: 'statistics', label: '统计信息', icon: DataAnalysis, route: '/statistics' }
 ]
 
