@@ -55,6 +55,8 @@ const handleLogout = async () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem 2rem;
+  min-height: var(--app-header-height);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -26,6 +26,11 @@ onMounted(() => {
 </script>
 
 <style>
+:root {
+  --app-header-height: 72px;
+  --app-header-safe-offset: calc(var(--app-header-height) + 16px);
+}
+
 #app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
@@ -47,7 +52,15 @@ body {
 /* 使用flex让HeaderNav和内容正常排列 */
 .content-wrapper {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   position: relative;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --app-header-height: 60px;
+    --app-header-safe-offset: calc(var(--app-header-height) + 12px);
+  }
 }
 </style>

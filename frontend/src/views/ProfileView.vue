@@ -179,7 +179,7 @@
       title="🐬 新增/编辑个人信息" 
       width="800px"
       :close-on-click-modal="false"
-      class="cute-dialog"
+      class="cute-dialog profile-editor-dialog"
     >
       <el-form 
         :model="currentProfile" 
@@ -187,127 +187,139 @@
         ref="profileFormRef" 
         label-width="120px"
         :label-position="'top'"
-        class="cute-form"
+        class="cute-form profile-editor-form"
       >
-        <el-divider content-position="left" class="cute-divider">🌟 基础信息</el-divider>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="basic.name">
-              <el-input v-model="currentProfile.basic.name" placeholder="请输入姓名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" prop="basic.gender">
-              <el-select v-model="currentProfile.basic.gender" placeholder="请选择性别" style="width: 100%">
-                <el-option label="男" value="男" />
-                <el-option label="女" value="女" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="出生日期（阳历）" prop="basic.birthDate">
-              <el-date-picker
-                v-model="currentProfile.basic.birthDate"
-                type="date"
-                placeholder="选择日期"
-                style="width: 100%"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="大学" prop="basic.university">
-              <el-input v-model="currentProfile.basic.university" placeholder="请输入大学名称" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-divider content-position="left" class="cute-divider">📱 联系方式</el-divider>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="电话" prop="contact.phone">
-              <el-input v-model="currentProfile.contact.phone" placeholder="请输入电话" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="contact.email">
-              <el-input v-model="currentProfile.contact.email" placeholder="请输入邮箱" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="微信号" prop="contact.wechat">
-              <el-input v-model="currentProfile.contact.wechat" placeholder="请输入微信号" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="QQ" prop="contact.qq">
-              <el-input v-model="currentProfile.contact.qq" placeholder="请输入QQ" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-divider content-position="left" class="cute-divider">🏫 班级信息</el-divider>
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="第一次认识我是在哪个班？" prop="clazzId">
-              <el-select 
-                v-model="currentProfile.clazzId" 
-                placeholder="请选择班级" 
-                style="width: 100%"
-                :disabled="!!profile"
-              >
-                <el-option 
-                  v-for="clazz in classList" 
-                  :key="clazz.id" 
-                  :label="clazz.name" 
-                  :value="clazz.id" 
-                >
-                  <div style="display: flex; align-items: center;">
-                    <span>{{ clazz.name }}</span>
-                    <span v-if="clazz.description" style="color: #9fa0b3; font-size: 12px; margin-left: 16px;">{{ clazz.description }}</span>
-                    <span v-if="clazz.createTime" style="color: #9fa0b3; font-size: 12px; margin-left: 16px;">{{ formatDate(clazz.createTime) }}</span>
-                  </div>
-                </el-option>
-              </el-select>
-              <p v-if="profile" class="class-notice">
-                <el-icon><InfoFilled /></el-icon>
-                班级信息提交后不可修改，如需修改请联系管理员。
-              </p>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-divider content-position="left" class="cute-divider">💌 留言与头像</el-divider>
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="留言" prop="message">
-              <el-input
-                v-model="currentProfile.message"
-                type="textarea"
-                placeholder="请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~"
-                :rows="4"
-                maxlength="256"
-                show-word-limit
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="头像URL" prop="avatar">
-              <el-input
-                v-model="currentProfile.avatar"
-                placeholder="请输入头像URL（例如：https://example.com/avatar.jpg）"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <div class="form-shell">
+          <div class="form-intro-card">
+            <div class="form-intro-badge">Profile Editor</div>
+            <h3 class="form-intro-title">完善你的个人资料</h3>
+            <p class="form-intro-text">
+              这是一个让同学们更好地了解你的地方。请尽量填写完整和真实的信息，这样大家才能更好地联系到你哦！如果你不想公开某些信息，可以选择不填写。提交后你也可以随时回来修改这些信息。期待看到一个真实、立体的你！带红色星号（*）的字段为必填项。
+            </p>
+          </div>
+
+          <section class="form-section">
+            <el-divider content-position="left" class="cute-divider">🌟 基础信息</el-divider>
+            <div class="form-grid">
+              <div class="form-grid-item">
+                <el-form-item label="姓名" prop="basic.name">
+                  <el-input v-model="currentProfile.basic.name" placeholder="请输入姓名" />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="性别" prop="basic.gender">
+                  <el-select v-model="currentProfile.basic.gender" placeholder="请选择性别" style="width: 100%">
+                    <el-option label="男" value="男" />
+                    <el-option label="女" value="女" />
+                  </el-select>
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="出生日期（阳历）" prop="basic.birthDate">
+                  <el-date-picker
+                    v-model="currentProfile.basic.birthDate"
+                    type="date"
+                    placeholder="选择日期"
+                    style="width: 100%"
+                  />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="大学" prop="basic.university">
+                  <el-input v-model="currentProfile.basic.university" placeholder="请输入大学名称" />
+                </el-form-item>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <el-divider content-position="left" class="cute-divider">📱 联系方式</el-divider>
+            <div class="form-grid">
+              <div class="form-grid-item">
+                <el-form-item label="电话" prop="contact.phone">
+                  <el-input v-model="currentProfile.contact.phone" placeholder="请输入电话" />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="邮箱" prop="contact.email">
+                  <el-input v-model="currentProfile.contact.email" placeholder="请输入邮箱" />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="微信号" prop="contact.wechat">
+                  <el-input v-model="currentProfile.contact.wechat" placeholder="请输入微信号" />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item">
+                <el-form-item label="QQ" prop="contact.qq">
+                  <el-input v-model="currentProfile.contact.qq" placeholder="请输入QQ" />
+                </el-form-item>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <el-divider content-position="left" class="cute-divider">🏫 班级信息</el-divider>
+            <div class="form-grid form-grid--single">
+              <div class="form-grid-item form-grid-item--full">
+                <el-form-item label="第一次认识我是在哪个班？" prop="clazzId">
+                  <el-select 
+                    v-model="currentProfile.clazzId" 
+                    placeholder="请选择班级" 
+                    style="width: 100%"
+                    :disabled="!!profile"
+                  >
+                    <el-option 
+                      v-for="clazz in classList" 
+                      :key="clazz.id" 
+                      :label="clazz.name" 
+                      :value="clazz.id" 
+                    >
+                      <div class="class-option-content">
+                        <span class="class-option-name">{{ clazz.name }}</span>
+                        <span v-if="clazz.description" class="class-option-meta">{{ clazz.description }}</span>
+                        <span v-if="clazz.createTime" class="class-option-meta">{{ formatDate(clazz.createTime) }}</span>
+                      </div>
+                    </el-option>
+                  </el-select>
+                  <p v-if="profile" class="class-notice">
+                    <el-icon><InfoFilled /></el-icon>
+                    班级信息提交后不可修改，如需修改请联系管理员。
+                  </p>
+                </el-form-item>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <el-divider content-position="left" class="cute-divider">💌 留言与头像</el-divider>
+            <div class="form-grid form-grid--single">
+              <div class="form-grid-item form-grid-item--full">
+                <el-form-item label="留言" prop="message">
+                  <el-input
+                    v-model="currentProfile.message"
+                    type="textarea"
+                    placeholder="请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~"
+                    :rows="4"
+                    maxlength="256"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </div>
+              <div class="form-grid-item form-grid-item--full">
+                <el-form-item label="头像URL(这是一个待开发功能，如果你知道这里填什么，可以填入你头像的URL地址)" prop="avatar">
+                  <el-input
+                    v-model="currentProfile.avatar"
+                    placeholder="请输入头像URL（例如：https://example.com/avatar.jpg）"
+                  />
+                </el-form-item>
+              </div>
+            </div>
+          </section>
+        </div>
       </el-form>
       <template #footer>
-        <div class="dialog-footer">
+        <div class="dialog-footer profile-dialog-footer">
           <el-button @click="showDialog = false" class="cute-btn-default">取消</el-button>
           <el-button type="primary" @click="saveProfile" :loading="saving" class="cute-btn-primary">确定</el-button>
         </div>
@@ -319,7 +331,7 @@
       title="🔐 修改密码"
       width="420px"
       :close-on-click-modal="false"
-      class="cute-dialog"
+      class="cute-dialog password-dialog"
     >
       <el-form
         ref="changePasswordFormRef"
@@ -801,7 +813,7 @@ onMounted(() => {
     linear-gradient(90deg, rgba(255, 182, 193, 0.4) 1px, transparent 1px);
   background-size: 30px 30px;
   background-attachment: fixed;
-  padding: 0;
+  padding: 20px 0 0;
   overflow-x: hidden;
   position: relative;
   z-index: 1;
@@ -848,6 +860,18 @@ onMounted(() => {
   animation: fadeIn 0.1s ease-out;
 }
 
+:deep(.profile-editor-dialog.el-dialog) {
+  width: min(960px, calc(100vw - 16px)) !important;
+  margin: var(--app-header-safe-offset) auto 12px !important;
+  max-height: calc(100vh - var(--app-header-safe-offset) - 24px);
+}
+
+:deep(.password-dialog.el-dialog) {
+  width: min(460px, calc(100vw - 16px)) !important;
+  margin: var(--app-header-safe-offset) auto 12px !important;
+  max-height: calc(100vh - var(--app-header-safe-offset) - 24px);
+}
+
 :deep(.cute-dialog .el-dialog__header) {
   background: #fff0f3;
   margin-right: 0;
@@ -860,6 +884,12 @@ onMounted(() => {
 
 :deep(.cute-dialog .el-dialog__body) {
   padding: 24px 20px;
+  max-height: calc(100vh - var(--app-header-safe-offset) - 160px);
+  overflow-y: auto;
+}
+
+:deep(.profile-editor-dialog .el-dialog__body) {
+  padding: 14px 12px 18px;
 }
 
 :deep(.cute-dialog .el-dialog__title) {
@@ -910,6 +940,16 @@ onMounted(() => {
   color: #4a4e69;
 }
 
+:deep(.profile-editor-form .el-form-item) {
+  margin-bottom: 0;
+}
+
+:deep(.profile-editor-form .el-form-item__label) {
+  padding-bottom: 8px;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
 :deep(.cute-form .el-input__wrapper),
 :deep(.cute-form .el-textarea__inner),
 :deep(.cute-form .el-select__wrapper) {
@@ -917,10 +957,139 @@ onMounted(() => {
   box-shadow: 0 0 0 1px #ffeaee inset;
 }
 
+:deep(.profile-editor-form .el-input__wrapper),
+:deep(.profile-editor-form .el-select__wrapper),
+:deep(.profile-editor-form .el-date-editor.el-input),
+:deep(.profile-editor-form .el-date-editor.el-input__wrapper) {
+  min-height: 48px;
+}
+
+:deep(.profile-editor-form .el-input__inner),
+:deep(.profile-editor-form .el-select__placeholder),
+:deep(.profile-editor-form .el-date-editor .el-input__inner) {
+  font-size: 0.95rem;
+}
+
+:deep(.profile-editor-form .el-textarea__inner) {
+  min-height: 136px;
+  padding-top: 14px;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+:deep(.profile-editor-form .el-form-item__error) {
+  padding-top: 6px;
+  line-height: 1.45;
+}
+
+:deep(.profile-editor-form .el-date-editor.el-input),
+:deep(.profile-editor-form .el-date-editor.el-input__wrapper) {
+  width: 100%;
+}
+
 :deep(.cute-form .el-input__wrapper.is-focus),
 :deep(.cute-form .el-textarea__inner:focus),
 :deep(.cute-form .el-select__wrapper.is-focused) {
   box-shadow: 0 0 0 2px #ffc8dd inset !important;
+}
+
+.form-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.form-intro-card {
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 240, 243, 0.98), rgba(247, 251, 255, 0.98));
+  border: 1px solid rgba(255, 200, 221, 0.75);
+  box-shadow: 0 10px 28px rgba(255, 117, 143, 0.08);
+}
+
+.form-intro-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #ff758f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-intro-title {
+  margin: 12px 0 8px;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  color: #4a4e69;
+}
+
+.form-intro-text {
+  margin: 0;
+  color: #7b819d;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.form-section {
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 200, 221, 0.55);
+  box-shadow: 0 10px 24px rgba(74, 78, 105, 0.05);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.form-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.form-grid-item {
+  min-width: 0;
+}
+
+.form-grid-item--full {
+  grid-column: 1 / -1;
+}
+
+.profile-dialog-footer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 10fr;
+  gap: 15px;
+}
+
+.profile-dialog-footer :deep(.el-button) {
+  width: 100%;
+  min-height: 10px;
+  margin: 0;
+}
+
+.class-option-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.class-option-name {
+  color: #4a4e69;
+  font-weight: 700;
+}
+
+.class-option-meta {
+  color: #9fa0b3;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .loading-section {
@@ -1241,6 +1410,7 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .profile-container {
+    padding-top: 8px;
     padding-bottom: 80px;
   }
 
@@ -1329,18 +1499,23 @@ onMounted(() => {
 /* 移动端适配：弹窗与底部编辑按钮 */
 @media (max-width: 768px) {
   ::deep(.cute-dialog.el-dialog) {
-    width: calc(100vw - 24px) !important;
-    margin: 12px auto !important;
+    width: calc(100vw - 16px) !important;
+    margin: var(--app-header-safe-offset) auto 12px !important;
+    max-height: calc(100vh - var(--app-header-safe-offset) - 20px);
   }
 
   ::deep(.cute-dialog .el-dialog__header) {
-    padding: 16px 14px;
+    padding: 14px 12px;
   }
 
   ::deep(.cute-dialog .el-dialog__body) {
-    max-height: calc(100vh - 190px);
+    max-height: calc(100vh - var(--app-header-safe-offset) - 112px);
     overflow: auto;
-    padding: 16px 14px;
+    padding: 12px;
+  }
+
+  ::deep(.cute-dialog .el-dialog__footer) {
+    padding: 0 12px 14px;
   }
 
   .mobile-edit-btn-wrapper {
@@ -1370,6 +1545,88 @@ onMounted(() => {
 
   .profile-container {
     padding-bottom: 140px; /* 给底部按钮和导航留出空间 */
+  }
+}
+
+@media (min-width: 600px) {
+  :deep(.profile-editor-dialog.el-dialog) {
+    width: min(960px, calc(100vw - 40px)) !important;
+  }
+
+  :deep(.profile-editor-dialog .el-dialog__body) {
+    padding: 20px 20px 22px;
+  }
+
+  .form-shell {
+    gap: 18px;
+  }
+
+  .form-section {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 18px;
+  }
+
+  .profile-dialog-footer {
+    grid-template-columns: repeat(2, minmax(0, 180px));
+    justify-content: end;
+  }
+}
+
+@media (min-width: 900px) {
+  :deep(.profile-editor-dialog .el-dialog__header) {
+    padding: 22px 24px;
+  }
+
+  :deep(.profile-editor-dialog .el-dialog__body) {
+    padding: 22px 24px 26px;
+  }
+
+  :deep(.profile-editor-dialog .el-dialog__footer) {
+    padding: 0 24px 24px;
+  }
+
+  .form-shell {
+    gap: 20px;
+  }
+
+  .form-intro-card {
+    padding: 22px 24px;
+  }
+
+  .form-intro-title {
+    font-size: 1.35rem;
+  }
+
+  .form-intro-text {
+    max-width: 70ch;
+    font-size: 0.96rem;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+
+  .form-grid {
+    gap: 18px 20px;
+  }
+
+  .profile-container {
+    padding-top: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :deep(.profile-editor-dialog.el-dialog) {
+    width: min(1040px, calc(100vw - 96px)) !important;
+  }
+
+  .form-intro-card,
+  .form-section {
+    border-radius: 24px;
   }
 }
 

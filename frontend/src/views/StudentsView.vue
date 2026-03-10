@@ -240,7 +240,7 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="头像URL(这是一个待开发功能，如果你懂得这里填什么，可以填入你头像的URL地址)" prop="avatar">
+            <el-form-item label="头像URL" prop="avatar">
               <el-input
                 v-model="currentStudent.avatar"
                 placeholder="请输入头像URL（例如：https://example.com/avatar.jpg）"
