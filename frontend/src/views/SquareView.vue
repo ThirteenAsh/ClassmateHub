@@ -220,6 +220,9 @@ const loadClassmates = async () => {
       setTimeout(() => {
         router.push('/profile')
       }, 2000)
+    }else if (response.data.code === 401) {
+      error.value = response.data.message || '本部分不予显示'
+      ElMessage.warning(error.value)
     } else {
       error.value = '加载失败'
       ElMessage.error(error.value)
