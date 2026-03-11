@@ -14,7 +14,7 @@
       <div class="login-card">
         <div class="logo-section">
           <h1 class="app-title">ClassmateHub</h1>
-          <p class="app-subtitle">同学录管理系统</p>
+          <p class="app-subtitle">同学录，连真情</p>
         </div>
 
         <div class="form-tabs">

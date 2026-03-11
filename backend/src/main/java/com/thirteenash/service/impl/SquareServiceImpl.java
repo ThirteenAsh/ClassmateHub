@@ -1,6 +1,7 @@
 package com.thirteenash.service.impl;
 
 import com.thirteenash.common.exception.BusinessException;
+import com.thirteenash.common.exception.ClassException;
 import com.thirteenash.dto.SquareStudentDTO;
 import com.thirteenash.entity.StudentProfile;
 import com.thirteenash.mapper.StudentProfileMapper;
@@ -31,6 +32,10 @@ public class SquareServiceImpl implements SquareService {
         Long clazzId = userProfile.getClazzId();
         if (clazzId == null) {
             throw new BusinessException("请先完善个人信息");
+        }
+
+        if(clazzId == 12){
+            throw new ClassException("您的班级为“其他”，为保护同学隐私，这里不会显示其他班级的同学信息，很感谢你填写的内容，我会永远记住你哒~（如果您是因为错误填写看到这个页面，请联系管理员修改您的班级~）");
         }
 
         List<StudentProfile> studentProfiles = studentProfileMapper.selectByClazzId(clazzId);

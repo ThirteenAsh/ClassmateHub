@@ -47,6 +47,7 @@ const router = createRouter({
 })
 
 // Route guard for authentication
+// @ts-ignore
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated

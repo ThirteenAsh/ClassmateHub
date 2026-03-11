@@ -262,12 +262,13 @@
             <el-divider content-position="left" class="cute-divider">🏫 班级信息</el-divider>
             <div class="form-grid form-grid--single">
               <div class="form-grid-item form-grid-item--full">
-                <el-form-item label="第一次认识我是在哪个班？" prop="clazzId">
+                <el-form-item label="第一次认识我是在哪个班？（谨慎选择，确认后不可更改！！）" prop="clazzId">
                   <el-select 
                     v-model="currentProfile.clazzId" 
                     placeholder="请选择班级" 
                     style="width: 100%"
                     :disabled="!!profile"
+                    popper-class="class-select-popper"
                   >
                     <el-option 
                       v-for="clazz in classList" 
@@ -799,6 +800,19 @@ onMounted(() => {
 </script>
 
 <style scoped src="../styles/message.css"></style>
+
+<style>
+.class-select-popper .el-select-dropdown__item {
+  height: auto;
+  line-height: normal;
+  padding: 4px 12px;
+}
+
+.class-select-popper .el-select-dropdown__item.is-selected .class-option-name {
+  color: #ff758f;
+  font-weight: 800;
+}
+</style>
 
 <style scoped>
 * {

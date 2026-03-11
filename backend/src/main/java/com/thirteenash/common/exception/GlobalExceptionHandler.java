@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
         return Result.error(e.getCode(), e.getMessage());
     }
 
+    @ExceptionHandler(ClassException.class)
+    public Result<String> handleClassException(ClassException e) {
+        log.error("班级异常：", e);
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result<String> handleValidationException(MethodArgumentNotValidException e) {
         // 获取第一个验证错误信息

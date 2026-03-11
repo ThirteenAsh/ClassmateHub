@@ -34,7 +34,7 @@ interface NavItem {
   route?: string
 }
 
-const props = defineProps<{
+defineProps<{
   activeTab: string
 }>()
 
