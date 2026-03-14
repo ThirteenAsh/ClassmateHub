@@ -1,6 +1,6 @@
 # ClassmateHub 同学录
 
-项目已在https://classmatehub.bytecraft.xin/上线
+项目已在 https://classmatehub.bytecraft.xin 上线
 
 ## 项目概述
 
