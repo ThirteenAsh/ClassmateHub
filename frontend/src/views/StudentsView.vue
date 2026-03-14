@@ -29,6 +29,49 @@
       </template>
       
       <div v-if="isAdmin">
+        <div class="filter-section">
+          <el-form :inline="true" class="filter-form">
+            <el-form-item label="姓名">
+              <el-input
+                v-model="searchForm.name"
+                placeholder="请输入姓名"
+                clearable
+                @keyup.enter="handleSearch"
+              />
+            </el-form-item>
+            <el-form-item label="性别">
+              <el-select
+                v-model="searchForm.gender"
+                placeholder="请选择性别"
+                clearable
+                style="width: 120px"
+              >
+                <el-option label="男" value="男" />
+                <el-option label="女" value="女" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="班级">
+              <el-select
+                v-model="searchForm.classId"
+                placeholder="请选择班级"
+                clearable
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="clazz in classList"
+                  :key="clazz.id"
+                  :label="clazz.name"
+                  :value="clazz.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" class="cute-btn-primary" @click="handleSearch">搜索</el-button>
+              <el-button class="cute-btn-default" @click="handleResetSearch">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
         <el-table 
           :data="studentList" 
           style="width: 100%" 
@@ -316,6 +359,15 @@ const pageSize = ref(10)
 const total = ref(0)
 const showCreateStudentDialog = ref(false)
 const activeTab = ref('')
+const searchForm = reactive<{
+  name?: string
+  gender?: string
+  classId?: number
+}>({
+  name: '',
+  gender: undefined,
+  classId: undefined
+})
 
 const currentStudent = reactive<StudentProfile>({
   basic: {},
@@ -381,7 +433,10 @@ const loadStudentList = async () => {
   try {
     const params = {
       page: currentPage.value - 1,
-      size: pageSize.value
+      size: pageSize.value,
+      name: searchForm.name?.trim() || undefined,
+      gender: searchForm.gender || undefined,
+      classId: searchForm.classId
     }
     
     const response = await studentApi.getStudentList(params)
@@ -401,11 +456,25 @@ const loadStudentList = async () => {
 
 const handleSizeChange = (size: number) => {
   pageSize.value = size
+  currentPage.value = 1
   loadStudentList()
 }
 
 const handleCurrentChange = (page: number) => {
   currentPage.value = page
+  loadStudentList()
+}
+
+const handleSearch = () => {
+  currentPage.value = 1
+  loadStudentList()
+}
+
+const handleResetSearch = () => {
+  searchForm.name = ''
+  searchForm.gender = undefined
+  searchForm.classId = undefined
+  currentPage.value = 1
   loadStudentList()
 }
 
@@ -811,6 +880,17 @@ onMounted(() => {
 
 .operation-buttons .button-row + .button-row {
   margin-top: 4px;
+}
+
+.filter-section {
+  margin-bottom: 12px;
+}
+
+.filter-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 /* 动画保留在组件内（供 :deep 使用） */
