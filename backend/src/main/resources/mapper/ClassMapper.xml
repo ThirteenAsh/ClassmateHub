@@ -45,6 +45,7 @@
         UPDATE clazz
         SET name = #{name},
             description = #{description},
+            create_time = #{createTime},
             update_time = #{updateTime}
         WHERE id = #{id}
     </update>

@@ -50,6 +50,14 @@ export interface ApiResponse<T = any> {
   data: T;
 }
 
+export interface StudentListParams {
+  classId?: number;
+  name?: string;
+  gender?: string;
+  page: number;
+  size: number;
+}
+
 export const classApi = {
   getClassList: (params?: { page: number; size: number }): Promise<AxiosResponse<ApiResponse<PageResponse<any>>>> => {
     return apiClient.get('/admin/classes', { params })
@@ -79,7 +87,7 @@ export const userApi = {
 }
 
 export const studentApi = {
-  getStudentList: (params?: { classId?: number; page: number; size: number }): Promise<AxiosResponse<ApiResponse<PageResponse<any>>>> => {
+  getStudentList: (params?: StudentListParams): Promise<AxiosResponse<ApiResponse<PageResponse<any>>>> => {
     return apiClient.get('/students', { params })
   },
   

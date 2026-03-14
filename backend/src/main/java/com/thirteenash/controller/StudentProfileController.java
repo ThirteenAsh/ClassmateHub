@@ -5,7 +5,7 @@ import cn.dev33.satoken.annotation.SaMode;
 import com.thirteenash.common.response.PageResponse;
 import com.thirteenash.common.response.Result;
 import com.thirteenash.dto.CreateStudentProfileRequestDTO;
-import com.thirteenash.dto.PageRequestDTO;
+import com.thirteenash.dto.StudentPageQueryDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.service.IStudentProfileService;
 import com.thirteenash.vo.StudentProfileVO;
@@ -41,16 +41,22 @@ public class StudentProfileController {
     /**
      * 获取同学列表
      */
-    @Operation(summary = "获取学生列表", description = "分页获取所有学生信息，仅管理员可操作")
+    @Operation(summary = "获取学生列表", description = "分页获取学生信息，支持按姓名、性别、班级过滤，仅管理员可操作")
     @Parameter(description = "页码", example = "0")
     @Parameter(description = "每页大小", example = "10")
+    @Parameter(description = "姓名（模糊搜索）", example = "张三")
+    @Parameter(description = "性别", example = "男")
+    @Parameter(description = "班级 ID", example = "1")
     @SaCheckRole("admin")
     @GetMapping
-    public Result<PageResponse<StudentProfileVO>> getStudentList(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-        PageRequestDTO pageRequestDTO = new PageRequestDTO();
-        pageRequestDTO.setPage(page);
-        pageRequestDTO.setSize(size);
-        PageResponse<StudentProfileVO> response = studentProfileService.getStudentListByPage(pageRequestDTO);
+    public Result<PageResponse<StudentProfileVO>> getStudentList(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Long classId) {
+        StudentPageQueryDTO queryDTO = new StudentPageQueryDTO(page, size, name, gender, classId);
+        PageResponse<StudentProfileVO> response = studentProfileService.getStudentListByPage(queryDTO);
         return Result.success(response);
     }
 

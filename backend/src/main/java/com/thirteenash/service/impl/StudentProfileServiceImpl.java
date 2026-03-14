@@ -5,7 +5,7 @@ import com.thirteenash.common.response.PageResponse;
 import com.thirteenash.dto.ClassStudentCountDTO;
 import com.thirteenash.dto.CreateStudentProfileRequestDTO;
 import com.thirteenash.dto.GenderCountDTO;
-import com.thirteenash.dto.PageRequestDTO;
+import com.thirteenash.dto.StudentPageQueryDTO;
 import com.thirteenash.dto.UpdateStudentProfileRequestDTO;
 import com.thirteenash.entity.StudentProfile;
 import com.thirteenash.mapper.AuthMapper;
@@ -148,22 +148,18 @@ public class StudentProfileServiceImpl implements IStudentProfileService {
         return result > 0;
     }
 
-    // 分页获取同学列表
+    // 分页获取同学列表（支持按姓名、性别、班级过滤）
     @Override
-    public PageResponse<StudentProfileVO> getStudentListByPage(PageRequestDTO pageRequestDTO) {
-        Integer page = pageRequestDTO.getPage();
-        Integer size = pageRequestDTO.getSize();
-        
-        if (page == null) {
-            page = 0;
-        }
-        if (size == null) {
-            size = 10;
-        }
+    public PageResponse<StudentProfileVO> getStudentListByPage(StudentPageQueryDTO queryDTO) {
+        Integer page = queryDTO.getPage() != null ? queryDTO.getPage() : 0;
+        Integer size = queryDTO.getSize() != null ? queryDTO.getSize() : 10;
+        String name = queryDTO.getName();
+        String gender = queryDTO.getGender();
+        Long classId = queryDTO.getClassId();
 
         int offset = page * size;
-        List<StudentProfile> studentProfiles = studentProfileMapper.selectByPage(offset, size);
-        Long total = studentProfileMapper.countTotal();
+        List<StudentProfile> studentProfiles = studentProfileMapper.selectByPageWithFilter(offset, size, name, gender, classId);
+        Long total = studentProfileMapper.countTotalWithFilter(name, gender, classId);
 
         List<StudentProfileVO> studentProfileVOs = new ArrayList<>();
         for (StudentProfile studentProfile : studentProfiles) {

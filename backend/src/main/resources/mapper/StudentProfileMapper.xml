@@ -69,6 +69,40 @@
         LIMIT #{offset}, #{pageSize}
     </select>
 
+    <select id="selectByPageWithFilter" resultMap="StudentProfileResultMap">
+        SELECT id, user_id, clazz_id, name, gender, birth_date, university, phone, email, wechat, qq, message, avatar, create_time, update_time
+        FROM student_profile
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="gender != null and gender != ''">
+                AND gender = #{gender}
+            </if>
+            <if test="classId != null">
+                AND clazz_id = #{classId}
+            </if>
+        </where>
+        ORDER BY id ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countTotalWithFilter" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM student_profile
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="gender != null and gender != ''">
+                AND gender = #{gender}
+            </if>
+            <if test="classId != null">
+                AND clazz_id = #{classId}
+            </if>
+        </where>
+    </select>
+
     <select id="selectCount" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM student_profile

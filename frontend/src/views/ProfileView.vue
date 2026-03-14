@@ -194,7 +194,7 @@
             <div class="form-intro-badge">Profile Editor</div>
             <h3 class="form-intro-title">完善你的个人资料</h3>
             <p class="form-intro-text">
-              这是一个让同学们更好地了解你的地方。请尽量填写完整和真实的信息，这样大家才能更好地联系到你哦！如果你不想公开某些信息，可以选择不填写。提交后你也可以随时回来修改这些信息。期待看到一个真实、立体的你！带红色星号（*）的字段为必填项。
+              这是一个让同学们更好地了解你的地方。请尽量填写完整和真实的信息，这样大家才能更好地联系到你哦！我会对数据严格保密，提交后你也可以随时回来修改这些信息。仅部分公开。带红色星号（*）的字段为必填项。
             </p>
           </div>
 
@@ -262,7 +262,7 @@
             <el-divider content-position="left" class="cute-divider">🏫 班级信息</el-divider>
             <div class="form-grid form-grid--single">
               <div class="form-grid-item form-grid-item--full">
-                <el-form-item label="第一次认识我是在哪个班？（谨慎选择，确认后不可更改！！）" prop="clazzId">
+                <el-form-item label="第一次认识我是在哪个班？（谨慎选择，确认后不可主动更改！！）" prop="clazzId">
                   <el-select 
                     v-model="currentProfile.clazzId" 
                     placeholder="请选择班级" 
@@ -300,7 +300,7 @@
                   <el-input
                     v-model="currentProfile.message"
                     type="textarea"
-                    placeholder="请随意留言，此部分内容不会公开，可以把你想说的话悄悄告诉我呦~"
+                    placeholder="来聊聊你心目中的我吧~或者有什么悄悄话也可以偷偷告诉我哦！此部分不会公开显示"
                     :rows="4"
                     maxlength="256"
                     show-word-limit

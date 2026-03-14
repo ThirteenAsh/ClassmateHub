@@ -24,9 +24,16 @@ public interface StudentProfileMapper {
 
     List<StudentProfile> selectByPage(@Param("offset") int offset, @Param("pageSize") int pageSize);
 
+    List<StudentProfile> selectByPageWithFilter(@Param("offset") int offset, @Param("pageSize") int pageSize,
+                                                @Param("name") String name, @Param("gender") String gender,
+                                                @Param("classId") Long classId);
+
     Long selectCount();
 
     Long countTotal();
+
+    Long countTotalWithFilter(@Param("name") String name, @Param("gender") String gender,
+                              @Param("classId") Long classId);
 
     /**
      * 统计每个班级的同学数量
