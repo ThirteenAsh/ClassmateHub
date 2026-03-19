@@ -117,7 +117,7 @@ ClassmateHub/
 
 ## 贡献指南
 
-由于项目尚在开发阶段，暂不接受功能贡献。待正式开发阶段开始后，欢迎提交 Issue 和 Pull Request。
+欢迎提交 Issue 和 Pull Request。
 
 ## 许可证
 
