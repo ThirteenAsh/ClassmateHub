@@ -4,8 +4,8 @@ import com.thirteenash.common.exception.BusinessException;
 import com.thirteenash.common.exception.ClassException;
 import com.thirteenash.dto.SquareStudentDTO;
 import com.thirteenash.entity.StudentProfile;
-import com.thirteenash.mapper.StudentProfileMapper;
 import com.thirteenash.mapper.AuthMapper;
+import com.thirteenash.mapper.StudentProfileMapper;
 import com.thirteenash.service.SquareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,21 +24,30 @@ public class SquareServiceImpl implements SquareService {
 
     @Override
     public List<SquareStudentDTO> getSquareStudents(Long userId) {
-        StudentProfile userProfile = studentProfileMapper.selectByUserId(userId);
-        if (userProfile == null) {
-            throw new BusinessException("请先完善个人信息");
-        }
+        Integer currentUserId = Math.toIntExact(userId);
+        String role = authMapper.selectRoleByUserId(currentUserId);
+        boolean isAdmin = "admin".equalsIgnoreCase(role);
 
-        Long clazzId = userProfile.getClazzId();
-        if (clazzId == null) {
-            throw new BusinessException("请先完善个人信息");
-        }
+        List<StudentProfile> studentProfiles;
+        if (isAdmin) {
+            studentProfiles = studentProfileMapper.selectAll();
+        } else {
+            StudentProfile userProfile = studentProfileMapper.selectByUserId(userId);
+            if (userProfile == null) {
+                throw new BusinessException("请先完善个人信息");
+            }
 
-        if(clazzId == 12){
-            throw new ClassException("您的班级为“其他”，为保护同学隐私，这里不会显示其他班级的同学信息，很感谢你填写的内容，我会永远记住你哒~（如果您是因为错误填写看到这个页面，请联系管理员修改您的班级~）");
-        }
+            Long clazzId = userProfile.getClazzId();
+            if (clazzId == null) {
+                throw new BusinessException("请先完善个人信息");
+            }
 
-        List<StudentProfile> studentProfiles = studentProfileMapper.selectByClazzId(clazzId);
+            if (clazzId == 12) {
+                throw new ClassException("您的班级为“其他”，为保护同学隐私，这里不会显示其他班级的同学信息，很感谢你填写的内容，我会永远记住你哒~（如果您是因为错误填写看到这个页面，请联系管理员修改您的班级~）");
+            }
+
+            studentProfiles = studentProfileMapper.selectByClazzId(clazzId);
+        }
 
         List<SquareStudentDTO> result = new ArrayList<>();
         for (StudentProfile profile : studentProfiles) {
