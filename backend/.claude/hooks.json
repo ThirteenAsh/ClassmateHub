@@ -1,0 +1,162 @@
+{
+  "hooks": {
+    "pre_code_analysis": {
+      "description": "Run before code analysis to check project structure",
+      "command": "pwd && ls -la",
+      "timeout": 10000,
+      "run_on": ["start", "new_task"],
+      "condition": "file_exists:pom.xml"
+    },
+    "post_code_analysis": {
+      "description": "Run after code analysis to identify Java components",
+      "command": "find src/main/java -name \"*.java\" | wc -l | xargs echo \"Found Java files:\"",
+      "timeout": 15000,
+      "run_on": ["start", "new_task"],
+      "condition": "file_exists:pom.xml"
+    },
+    "pre_build": {
+      "description": "Run before building the project",
+      "command": "echo \"Starting build process...\" && mvn clean compile",
+      "timeout": 120000,
+      "run_on": ["build"],
+      "condition": "file_exists:pom.xml"
+    },
+    "post_build": {
+      "description": "Run after building to check for build artifacts",
+      "command": "ls -la target/ | grep -E \"(jar|war)$\"",
+      "timeout": 5000,
+      "run_on": ["build"],
+      "condition": "file_exists:pom.xml"
+    },
+    "pre_test": {
+      "description": "Run before tests to ensure project is compiled",
+      "command": "mvn clean compile",
+      "timeout": 60000,
+      "run_on": ["test"],
+      "condition": "file_exists:pom.xml"
+    },
+    "post_test": {
+      "description": "Run after tests to report results",
+      "command": "echo \"Test execution completed. Check target/surefire-reports/ for details.\"",
+      "timeout": 5000,
+      "run_on": ["test"],
+      "condition": "file_exists:pom.xml"
+    },
+    "pre_run": {
+      "description": "Run before starting the application",
+      "command": "echo \"Starting Spring Boot application...\"",
+      "timeout": 5000,
+      "run_on": ["run"],
+      "condition": "file_exists:pom.xml"
+    },
+    "post_run": {
+      "description": "Run after application starts to check health",
+      "command": "sleep 10 && curl -s http://localhost:8080/swagger-ui.html > /dev/null && echo \"Application started successfully\" || echo \"Application may not be ready\"",
+      "timeout": 20000,
+      "run_on": ["run"],
+      "condition": "file_exists:pom.xml"
+    },
+    "pre_git_commit": {
+      "description": "Run before git commit to check code quality",
+      "command": "echo \"Pre-commit checks...\" && mvn spotbugs:check",
+      "timeout": 30000,
+      "run_on": ["git_commit"],
+      "condition": "command_exists:spotbugs"
+    },
+    "pre_security_scan": {
+      "description": "Run before security scanning",
+      "command": "echo \"Starting security scan...\"",
+      "timeout": 5000,
+      "run_on": ["security_scan"],
+      "condition": "file_exists:pom.xml"
+    },
+    "on_error": {
+      "description": "Run when an error occurs",
+      "command": "echo \"Error detected. Check logs for details.\"",
+      "timeout": 5000,
+      "run_on": ["error"],
+      "condition": "always"
+    },
+    "on_file_change": {
+      "description": "Run when Java files are modified",
+      "command": "echo \"Java files modified. Consider recompiling.\"",
+      "timeout": 5000,
+      "run_on": ["file_change"],
+      "condition": "file_pattern:src/main/java/**/*.java"
+    },
+    "on_new_file": {
+      "description": "Run when new files are created",
+      "command": "echo \"New files detected. Updating project index...\"",
+      "timeout": 10000,
+      "run_on": ["new_file"],
+      "condition": "file_pattern:src/**/*"
+    }
+  },
+  "conditions": {
+    "file_exists": {
+      "type": "file_exists",
+      "description": "Check if a file exists"
+    },
+    "command_exists": {
+      "type": "command_exists",
+      "description": "Check if a command is available"
+    },
+    "file_pattern": {
+      "type": "file_pattern",
+      "description": "Check if files match a pattern"
+    },
+    "always": {
+      "type": "always",
+      "description": "Always run the hook"
+    }
+  },
+  "triggers": {
+    "start": {
+      "description": "When Claude Code session starts",
+      "events": ["session_start"]
+    },
+    "new_task": {
+      "description": "When a new task is started",
+      "events": ["task_start"]
+    },
+    "build": {
+      "description": "When building the project",
+      "events": ["build_command"]
+    },
+    "test": {
+      "description": "When running tests",
+      "events": ["test_command"]
+    },
+    "run": {
+      "description": "When running the application",
+      "events": ["run_command"]
+    },
+    "git_commit": {
+      "description": "When committing to git",
+      "events": ["git_commit"]
+    },
+    "security_scan": {
+      "description": "When running security scan",
+      "events": ["security_scan"]
+    },
+    "error": {
+      "description": "When an error occurs",
+      "events": ["error"]
+    },
+    "file_change": {
+      "description": "When files are modified",
+      "events": ["file_modified"]
+    },
+    "new_file": {
+      "description": "When new files are created",
+      "events": ["file_created"]
+    }
+  },
+  "config": {
+    "enabled": true,
+    "log_level": "info",
+    "timeout_default": 30000,
+    "parallel_execution": false,
+    "error_handling": "continue_on_error"
+  }
+}

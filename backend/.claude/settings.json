@@ -1,0 +1,142 @@
+{
+  "conversation": {
+    "max_tokens": 8000,
+    "temperature": 0.7,
+    "top_p": 1.0
+  },
+  "code": {
+    "indentation": 4,
+    "use_spaces": true,
+    "line_length": 120,
+    "format_on_save": true,
+    "lint_on_save": true
+  },
+  "java": {
+    "version": "17",
+    "maven_commands": {
+      "build": "mvn clean package",
+      "run": "mvn spring-boot:run",
+      "test": "mvn test",
+      "compile": "mvn clean compile"
+    },
+    "project_structure": {
+      "source_dir": "src/main/java",
+      "test_dir": "src/test/java",
+      "resources_dir": "src/main/resources",
+      "target_dir": "target"
+    },
+    "frameworks": {
+      "spring_boot": true,
+      "mybatis": true,
+      "sa_token": true
+    }
+  },
+  "database": {
+    "type": "mysql",
+    "version": "8.x",
+    "default_port": 3306,
+    "schemas": [
+      "classmatehub"
+    ],
+    "migration_files": [
+      "db.sql"
+    ]
+  },
+  "api": {
+    "documentation": {
+      "swagger_path": "/swagger-ui.html",
+      "openapi_path": "/v3/api-docs",
+      "prefix": "/api/v1"
+    },
+    "default_response_format": {
+      "code": "integer",
+      "message": "string",
+      "data": "object"
+    }
+  },
+  "git": {
+    "default_branch": "main",
+    "current_branch": "dev",
+    "auto_commit": false,
+    "commit_template": {
+      "type": true,
+      "scope": true,
+      "subject": true,
+      "body": false,
+      "footer": false
+    }
+  },
+  "automation": {
+    "auto_test": false,
+    "auto_lint": true,
+    "auto_format": true,
+    "pre_commit_hooks": true
+  },
+  "notifications": {
+    "errors": true,
+    "warnings": true,
+    "info": false,
+    "debug": false
+  },
+  "performance": {
+    "max_file_size": 10485760,
+    "max_dir_depth": 5,
+    "cache_enabled": true,
+    "cache_ttl": 300
+  },
+  "security": {
+    "scan_vulnerabilities": true,
+    "check_secrets": true,
+    "validate_inputs": true,
+    "owasp_top10": true
+  },
+  "custom_commands": {
+    "run_backend": {
+      "command": "mvn spring-boot:run",
+      "description": "Run the Spring Boot backend",
+      "working_dir": "."
+    },
+    "build_backend": {
+      "command": "mvn clean package",
+      "description": "Build the backend JAR",
+      "working_dir": "."
+    },
+    "init_db": {
+      "command": "mysql -u root -p classmatehub < db.sql",
+      "description": "Initialize database schema",
+      "working_dir": "."
+    },
+    "run_tests": {
+      "command": "mvn test",
+      "description": "Run all tests",
+      "working_dir": "."
+    }
+  },
+  "project_specific": {
+    "name": "ClassmateHub Backend",
+    "version": "1.0.2",
+    "description": "Classmate management system backend with Spring Boot 3",
+    "main_packages": [
+      "com.thirteenash.controller",
+      "com.thirteenash.service",
+      "com.thirteenash.mapper",
+      "com.thirteenash.entity",
+      "com.thirteenash.dto",
+      "com.thirteenash.common",
+      "com.thirteenash.config"
+    ],
+    "entity_classes": [
+      "Users",
+      "Clazz",
+      "StudentProfile"
+    ],
+    "controller_classes": [
+      "AuthController",
+      "ClassController",
+      "StudentProfileController",
+      "ProfileController",
+      "SquareController",
+      "AdminController"
+    ]
+  }
+}
