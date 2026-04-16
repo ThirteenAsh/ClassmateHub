@@ -1,5 +1,14 @@
 # ClassmateHub 同学录
 
+[![Stars](https://img.shields.io/github/stars/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
+[![Forks](https://img.shields.io/github/forks/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
+[![Issues](https://img.shields.io/github/issues/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub/issues)
+![Java](https://img.shields.io/badge/Java-17+-blue)
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.5-green)
+![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
+![MySQL](https://img.shields.io/badge/MySQL-8.x-orange)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 项目已在 https://classmatehub.bytecraft.xin 上线
 
 ## 项目概述
