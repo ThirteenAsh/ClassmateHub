@@ -1,3 +1,5 @@
+<div align="center">
+
 # ClassmateHub 同学录
 
 [![Stars](https://img.shields.io/github/stars/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
@@ -8,6 +10,8 @@
 ![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
 ![MySQL](https://img.shields.io/badge/MySQL-8.x-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+
+</div>
 
 项目已在 https://classmatehub.bytecraft.xin 上线
 
