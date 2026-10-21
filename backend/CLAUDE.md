@@ -1,197 +1,197 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code (claude.ai/code) 提供在此代码库中工作的指导。
 
-## Project Overview
+## 项目概览
 
-**ClassmateHub Backend** - A complete classmate management system backend built with Spring Boot 3, MyBatis, and Sa-Token authentication.
+**ClassmateHub Backend** - 一个完整的同学录管理系统后端，使用 Spring Boot 3、MyBatis 和 Sa-Token 认证构建。
 
-**Current Version**: v1.0.2  
-**Java Version**: 17  
-**Framework**: Spring Boot 3.5.10
+**当前版本**: v1.0.2  
+**Java 版本**: 17  
+**框架**: Spring Boot 3.5.10
 
-## Quick Start Commands
+## 快速开始命令
 
-### Build & Run
+### 构建和运行
 ```bash
-# Clean and build the project
+# 清理并构建项目
 mvn clean package
 
-# Run the application
+# 运行应用
 mvn spring-boot:run
 
-# Or run the built JAR
+# 或运行构建的 JAR 包
 java -jar target/backend-1.0.2.jar
 
-# Quick start script (Windows)
+# 快速启动脚本（Windows）
 RunBackend.bat
 ```
 
-### Development
+### 开发
 ```bash
-# Compile the project
+# 编译项目
 mvn clean compile
 
-# Run with hot reload (devtools not configured, restart required)
+# 运行（未配置热重载，需要重启）
 mvn spring-boot:run
 
-# Run tests
+# 运行测试
 mvn test
 
-# Run a single test
+# 运行单个测试
 mvn test -Dtest=ClassName#methodName
 ```
 
-### Database
+### 数据库
 ```bash
-# Initialize database (run db.sql)
+# 初始化数据库（运行 db.sql）
 mysql -u root -p classmatehub < db.sql
 ```
 
-## Project Architecture
+## 项目架构
 
-### Layered Architecture
+### 分层架构
 ```
-Controller → Service → Mapper → Database
+控制器 → 服务 → 映射器 → 数据库
 ```
 
-### Core Components
+### 核心组件
 
-**Controllers** (`src/main/java/com/thirteenash/controller/`)
-- `AuthController` - User authentication (login, register, logout, password change)
-- `ClassController` - Class management operations
-- `StudentProfileController` - Student information CRUD
-- `ProfileController` - Personal center management
-- `SquareController` - Public square functionality
-- `AdminController` - Admin operations
+**控制器** (`src/main/java/com/thirteenash/controller/`)
+- `AuthController` - 用户认证（登录、注册、登出、修改密码）
+- `ClassController` - 班级管理操作
+- `StudentProfileController` - 学生信息增删改查
+- `ProfileController` - 个人中心管理
+- `SquareController` - 公共广场功能
+- `AdminController` - 管理员操作
 
-**Services** (`src/main/java/com/thirteenash/service/`)
-- Interface-based service layer with `impl/` containing implementations
-- `StpInterfaceImpl` - Sa-Token permission implementation
+**服务层** (`src/main/java/com/thirteenash/service/`)
+- 基于接口的服务层，实现在 `impl/` 目录
+- `StpInterfaceImpl` - Sa-Token 权限实现
 
-**Mappers** (`src/main/java/com/thirteenash/mapper/`)
-- MyBatis mapper interfaces for database operations
-- XML mappings in `src/main/resources/mapper/`
+**映射器** (`src/main/java/com/thirteenash/mapper/`)
+- MyBatis 映射器接口用于数据库操作
+- XML 映射文件在 `src/main/resources/mapper/`
 
-**Entities** (`src/main/java/com/thirteenash/entity/`)
-- `Users` - User entity with authentication fields
-- `Clazz` - Class entity
-- `StudentProfile` - Student profile entity
+**实体类** (`src/main/java/com/thirteenash/entity/`)
+- `Users` - 用户实体，包含认证字段
+- `Clazz` - 班级实体
+- `StudentProfile` - 学生档案实体
 
-**DTOs** (`src/main/java/com/thirteenash/dto/`)
-- Request DTOs for API input validation
-- Response DTOs for API output formatting
+**DTO** (`src/main/java/com/thirteenash/dto/`)
+- 请求 DTO 用于 API 输入验证
+- 响应 DTO 用于 API 输出格式化
 
-**Common Components** (`src/main/java/com/thirteenash/common/`)
-- `GlobalExceptionHandler` - Centralized exception handling
-- `Result` - Unified API response format
-- `BusinessException` - Custom business exceptions
+**通用组件** (`src/main/java/com/thirteenash/common/`)
+- `GlobalExceptionHandler` - 集中式异常处理
+- `Result` - 统一 API 响应格式
+- `BusinessException` - 自定义业务异常
 
-## Configuration
+## 配置
 
-### Database Configuration
-**File**: `src/main/resources/application.yml`
-- MySQL database: `jdbc:mysql://localhost:3306/classmatehub`
-- Default credentials: root/123456
-- Connection pool: HikariCP with 20 max pool size
+### 数据库配置
+**文件**: `src/main/resources/application.yml`
+- MySQL 数据库: `jdbc:mysql://localhost:3306/classmatehub`
+- 默认凭据: root/123456
+- 连接池: HikariCP，最大连接池大小 20
 
-### API Documentation
+### API 文档
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **OpenAPI JSON**: http://localhost:8080/v3/api-docs
 
-### API Endpoints Structure
-All APIs use `/api/v1` prefix:
-- `/api/v1/auth/*` - Authentication endpoints
-- `/api/v1/classes/*` - Class management
-- `/api/v1/students/*` - Student profile management
-- `/api/v1/square` - Public square
-- `/api/v1/admin/*` - Admin operations
+### API 端点结构
+所有 API 使用 `/api/v1` 前缀:
+- `/api/v1/auth/*` - 认证端点
+- `/api/v1/classes/*` - 班级管理
+- `/api/v1/students/*` - 学生档案管理
+- `/api/v1/square` - 公共广场
+- `/api/v1/admin/*` - 管理员操作
 
-## Security & Authentication
+## 安全与认证
 
-**Sa-Token** implementation provides:
-- Token-based authentication
-- Role-based access control (user/admin roles)
-- Session management
+**Sa-Token** 实现提供:
+- 基于 Token 的认证
+- 基于角色的访问控制（用户/管理员角色）
+- 会话管理
 
-**Authentication Flow**:
-1. User login → Token generation
-2. Token validation via Sa-Token interceptor
-3. Permission checks for role-based access
+**认证流程**:
+1. 用户登录 → Token 生成
+2. 通过 Sa-Token 拦截器进行 Token 验证
+3. 基于角色的权限检查
 
-## Database Schema
+## 数据库架构
 
-### Tables
-- `users` - User authentication and role data
-- `clazz` - Class information
-- `student_profile` - Student detailed profiles
+### 数据表
+- `users` - 用户认证和角色数据
+- `clazz` - 班级信息
+- `student_profile` - 学生详细档案
 
-### Key Relationships
+### 关键关系
 - `users.classId` → `clazz.id`
 - `student_profile.user_id` → `users.id`
 - `student_profile.clazz_id` → `clazz.id`
 
-## Development Guidelines
+## 开发指南
 
-### Code Style
-- **Indentation**: 4 spaces
-- **Method length**: < 50 lines
-- **Class length**: < 500 lines
-- **Naming**: PascalCase for classes, camelCase for methods/variables
+### 代码风格
+- **缩进**: 4 个空格
+- **方法长度**: < 50 行
+- **类长度**: < 500 行
+- **命名**: 类使用 PascalCase，方法和变量使用 camelCase
 
-### Exception Handling
-- Use `BusinessException` for business logic errors
-- All exceptions handled by `GlobalExceptionHandler`
-- Never catch and silently return errors in business code
+### 异常处理
+- 使用 `BusinessException` 处理业务逻辑错误
+- 所有异常由 `GlobalExceptionHandler` 处理
+- 业务代码中不要捕获异常后静默返回
 
-### Response Format
+### 响应格式
 ```json
 {
   "code": 200,
-  "message": "Success message",
+  "message": "成功消息",
   "data": { ... }
 }
 ```
 
-### MyBatis Best Practices
-- Mapper interfaces in `com.thirteenash.mapper`
-- XML mappings in `resources/mapper/`
-- Entity aliases configured in `application.yml`
-- CamelCase field mapping enabled
+### MyBatis 最佳实践
+- 映射器接口在 `com.thirteenash.mapper`
+- XML 映射文件在 `resources/mapper/`
+- 实体别名在 `application.yml` 中配置
+- 启用驼峰命名映射
 
-## Common Development Tasks
+## 常见开发任务
 
-### Adding a New API Endpoint
-1. Create request/response DTOs in `dto/`
-2. Add controller method in appropriate controller
-3. Create service interface and implementation
-4. Add mapper method and XML SQL
-5. Test via Swagger UI
+### 添加新的 API 端点
+1. 在 `dto/` 中创建请求/响应 DTO
+2. 在相应的控制器中添加控制器方法
+3. 创建服务接口和实现
+4. 添加映射器方法和 XML SQL
+5. 通过 Swagger UI 测试
 
-### Database Changes
-1. Modify `db.sql` for schema changes
-2. Update corresponding entity classes
-3. Adjust mapper XML files
-4. Rebuild and test
+### 数据库变更
+1. 修改 `db.sql` 进行架构变更
+2. 更新相应的实体类
+3. 调整映射器 XML 文件
+4. 重新构建并测试
 
-### Adding Authentication
-- Use `@SaCheckLogin` for login-required endpoints
-- Use `@SaCheckRole("admin")` for admin-only access
-- Custom permissions in `StpInterfaceImpl`
+### 添加认证
+- 使用 `@SaCheckLogin` 标注需要登录的端点
+- 使用 `@SaCheckRole("admin")` 标注仅管理员访问的端点
+- 在 `StpInterfaceImpl` 中自定义权限
 
-## Testing
-- Unit tests: `src/test/java/`
-- Run with: `mvn test`
-- MyBatis provides integration testing support
+## 测试
+- 单元测试: `src/test/java/`
+- 运行命令: `mvn test`
+- MyBatis 提供集成测试支持
 
-## Troubleshooting
+## 故障排除
 
-### Common Issues
-- **Database connection**: Check MySQL service and credentials in `application.yml`
-- **Port conflict**: Change `server.port` in `application.yml`
-- **MyBatis errors**: Enable debug logging in `application.yml`
-- **Authentication failures**: Verify Sa-Token configuration in `SaTokenConfigure`
+### 常见问题
+- **数据库连接**: 检查 MySQL 服务和 `application.yml` 中的凭据
+- **端口冲突**: 在 `application.yml` 中更改 `server.port`
+- **MyBatis 错误**: 为 `com.thirteenash.mapper` 启用调试日志
+- **认证失败**: 验证 `SaTokenConfigure` 中的 Sa-Token 配置
 
-### Logs
-- MyBatis SQL logging: DEBUG level for `com.thirteenash.mapper`
-- Spring Web logging: DEBUG level for `org.springframework.web`
+### 日志
+- MyBatis SQL 日志: 为 `com.thirteenash.mapper` 设置 DEBUG 级别
+- Spring Web 日志: 为 `org.springframework.web` 设置 DEBUG 级别

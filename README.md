@@ -1,5 +1,13 @@
 # ClassmateHub 同学录
 
+[![Stars](https://img.shields.io/github/stars/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
+[![Forks](https://img.shields.io/github/forks/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
+[![Issues](https://img.shields.io/github/issues/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub/issues)
+![Go](https://img.shields.io/badge/Go-1.25+-blue)
+![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
+![MySQL](https://img.shields.io/badge/MySQL-8.x-orange)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 ## 项目概述
 
 ClassmateHub 是一个现代化的全栈同学录系统，采用前后端分离架构，旨在帮助用户轻松维护同学信息，促进校友之间的联系与互动。系统提供了用户认证、班级管理、同学信息管理、信息隐私控制、访客查看等核心功能，为用户打造一个安全、便捷的同学录平台。
@@ -18,15 +26,15 @@ ClassmateHub 是一个现代化的全栈同学录系统，采用前后端分离�
 ### 后端技术栈
 | 类别 | 技术 | 版本 | 用途 |
 |------|------|------|------|
-| 基础语言 | Java | 17+ | 开发语言 |
-| 框架 | Spring Boot | 3.5.10 | 应用框架 |
-| 持久层 | MyBatis | 3.5.16 | ORM框架 |
+| 基础语言 | Go | 1.25+ | 开发语言 |
+| HTTP 服务 | net/http | 标准库 | REST API 和路由 |
+| 持久层 | database/sql + go-sql-driver/mysql | 1.9.3 | MySQL 数据访问 |
 | 数据库 | MySQL | 8.x | 数据存储 |
-| *认证* | *JWT* | *0.12.5* | *无状态认证* |
-| 构建工具 | Maven | 3.9.6 | 依赖管理 |
-| 代码简化 | Lombok | 1.18.30 | 减少样板代码 |
-| *安全* | *Spring Security* | *6.3.1* | *密码加密* |
-| JSON处理 | Jackson | 2.17.2 | JSON序列化/反序列化 |
+| 认证 | 内存 Token 会话 | - | 兼容 Bearer 和 satoken Cookie / 请求头 |
+| 构建工具 | Go Modules | - | 依赖管理和构建 |
+| JSON处理 | encoding/json | 标准库 | JSON序列化/反序列化 |
+
+Go 后端复用云端原数据库，保留现有明文密码方案和权限规则。原 Spring Boot 代码保留在 `backend` 中用于对照和回退。
 
 ### 前端技术栈
 | 类别        | 技术         | 简要说明                        |
@@ -56,7 +64,7 @@ ClassmateHub 是一个现代化的全栈同学录系统，采用前后端分离�
 - 更新个人信息
 
 ### 4. 系统特性
-- 安全的用户认证机制（JWT）
+- Token 会话认证和服务端角色检查
 - 统一的信息管理界面
 - 灵活的隐私控制
 - 响应式设计，支持多设备访问
@@ -66,7 +74,9 @@ ClassmateHub 是一个现代化的全栈同学录系统，采用前后端分离�
 
 ```
 ClassmateHub/
-├── backend/                    # 后端项目
+├── go-backend/                 # Go 后端（当前实现）
+│   └── README.md               # 配置、验证与云端切换说明
+├── backend/                    # 原 Spring Boot 后端（对照和回退）
 │   ├── src/                    # 源码目录
 │   ├── resources/              # 资源文件
 │   └── README.md               # 后端详细文档
@@ -82,14 +92,15 @@ ClassmateHub/
 ## 快速开始
 
 ### 基本运行环境要求
-- Java 17 或更高版本
+- Go 1.25 或更高版本
 - Node.js 16 或更高版本
 - MySQL 8.0 或更高版本
-- Maven 3.6 或更高版本
 
 ### 前后端启动
 
-若已安装基本运行环境，直接运行前后端中的`RunBackend.bat`以及`RunFrontend.bat`即可快速启动服务
+先复制 `go-backend/.env.example` 为 `go-backend/.env` 并填写实际数据库配置，再运行 `go-backend/RunBackend.bat` 和 `frontend/RunFrontend.bat`。也可在 `go-backend` 中执行 `go run .`。
+
+云端迁移直接复用现有数据库，不导入本地数据、不修改表结构。详细步骤见 [Go 后端说明](go-backend/README.md)。
 
 ## 使用说明
 

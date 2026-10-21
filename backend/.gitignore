@@ -35,3 +35,4 @@ build/
 db.sql
 .github/
 .mvn/
+.claude/settings.local.json
