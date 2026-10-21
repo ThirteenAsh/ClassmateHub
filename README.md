@@ -1,3 +1,5 @@
+<div align="center">
+
 # ClassmateHub 同学录
 
 [![Stars](https://img.shields.io/github/stars/ThirteenAsh/ClassmateHub)](https://github.com/ThirteenAsh/ClassmateHub)
@@ -7,6 +9,10 @@
 ![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
 ![MySQL](https://img.shields.io/badge/MySQL-8.x-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+
+</div>
+
+项目已在 https://classmatehub.bytecraft.xin 上线
 
 ## 项目概述
 
@@ -107,7 +113,6 @@ ClassmateHub/
 ### 管理员功能
 - 创建和管理班级
 - 管理班级成员
-- 重置用户密码
 - 查看系统统计信息
 
 ### 普通用户功能
@@ -120,15 +125,14 @@ ClassmateHub/
 ## 未来规划
 
 - 实现留言互动功能
+- 实现Redis缓存功能，缓解数据库压力
 - 支持文件和头像上传
 - 添加通知系统
 - 实现数据导出功能
-- 添加搜索和筛选功能
-- 优化移动端体验
 
 ## 贡献指南
 
-由于项目尚在开发阶段，暂不接受功能贡献。待正式开发阶段开始后，欢迎提交 Issue 和 Pull Request。
+欢迎提交 Issue 和 Pull Request。
 
 ## 许可证
 
